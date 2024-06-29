@@ -7,6 +7,9 @@ When you're ready, start your application by running:\
 
 Your application will be available at http://localhost:8000.
 
+PhpMyAdmin will be available at http://localhost:8080. \
+You can login with the credentials found in the `.env` or `compose.yaml` (`MYSQL_USER`, `MYSQL_PASSWORD` entries).
+
 This will do the following:
 - Build the Docker image for your application.
 - Start the Docker containers for your application and services.<br /><br />
@@ -56,3 +59,17 @@ Storage directories:
 
 To show all routes, run:\
 `php artisan route:list`.
+
+## Update Dependencies ##
+
+### Composer ###
+
+To update composer dependencies, open the terminal in your `app` container and run:\
+`composer update`.
+
+### NPM ###
+To update npm dependencies, open the terminal in your `node` container and run:\
+`npm update`.
+
+### Important ###
+<mark style="padding: 3px">-Afterwards you should delete the docker images of `app` and / or `node`-</mark>
