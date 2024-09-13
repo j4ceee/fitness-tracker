@@ -15,6 +15,8 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
+    protected $table = 'users';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -49,10 +51,5 @@ class User extends Authenticatable
             'password' => 'hashed',
             'admin' => 'boolean',
         ];
-    }
-
-    public function dozent(): HasOne // only one dozent can be assigned to a user
-    {
-        return $this->hasOne(Dozent::class);
     }
 }
