@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --blue: #259FE2;
+    --bg: #121826;
+    --bg_light: #1E2A36;
+    --white: #ffffff;
+}
+
+.dark_bg {
+    background-color: var(--bg);
+    color: var(--white);
+}
+
+.light_bg {
+    --tw-text-opacity: 1;
+    background-color: var(--bg_light);
+    color: var(--white);
+}
+
+.blue_border {
+    --tw-border-opacity: 1;
+    border-color: var(--blue);
+}
