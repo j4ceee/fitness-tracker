@@ -54,7 +54,14 @@ class User extends Authenticatable
         ];
     }
 
-    public function userStats(): HasOne
+    protected static function booted(): void
+    {
+        static::created(function ($user) {
+            $user->user_stats()->create();
+        });
+    }
+
+    public function user_stats(): HasOne
     {
         return $this->hasOne(UserStats::class);
     }
@@ -64,7 +71,7 @@ class User extends Authenticatable
         return $this->hasMany(Day::class);
     }
 
-    public function userMonthly(): HasMany
+    public function user_monthly(): HasMany
     {
         return $this->hasMany(UserMonthly::class);
     }

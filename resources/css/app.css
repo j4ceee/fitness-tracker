@@ -15,12 +15,24 @@
 }
 
 .light_bg {
-    --tw-text-opacity: 1;
     background-color: var(--bg_light);
     color: var(--white);
 }
 
 .blue_border {
     --tw-border-opacity: 1;
+    --tw-ring-color: var(--blue);
     border-color: var(--blue);
+}
+
+.blue_border_focus:focus-within {
+    --tw-border-opacity: 1;
+    --tw-ring-color: var(--blue);
+    border-color: var(--blue);
+    border-width: 2px;
+}
+
+.req {
+    color: red;
+    font-weight: bold;
 }

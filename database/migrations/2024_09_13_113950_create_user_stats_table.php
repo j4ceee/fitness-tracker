@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('user_stats', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained("users")->cascadeOnDelete();
-            $table->enum('gender', array('m', 'f', 'o'));
-            $table->integer('height');
-            $table->integer('start_weight');
-            $table->integer('target_weight');
-            $table->integer('step_goal');
-            $table->integer('global_calorie_goal');
-            $table->integer('points_total');
+            $table->enum('gender', array('m', 'f', 'o'))->nullable();
+            $table->float('height')->nullable();
+            $table->float('start_weight')->nullable();
+            $table->float('target_weight')->nullable();
+            $table->integer('step_goal')->nullable();
+            $table->integer('global_calorie_goal')->nullable();
+            $table->integer('points_total')->default(0);
             $table->timestamps();
         });
     }

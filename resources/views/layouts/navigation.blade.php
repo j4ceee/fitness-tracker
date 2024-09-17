@@ -16,16 +16,19 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+
+                    <x-nav-link>
+                        {{ __('Leaderboard') }}
+                    </x-nav-link>
+
+                    <x-nav-link>
+                        {{ __('Tage') }}
+                    </x-nav-link>
+
                     @if (Auth::user()->admin)
                         {{-- only show link if user is admin, only admins should be able to create new users, lecturers & courses --}}
-                        <x-nav-link>
-                            {{ __('Benutzer & Dozenten') }}
-                        </x-nav-link>
-                        <x-nav-link>
-                            {{ __('Kurse') }}
-                        </x-nav-link>
-                        <x-nav-link>
-                            {{ __('Studiengänge') }}
+                        <x-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
+                            {{ __('Admin') }}
                         </x-nav-link>
                     @endif
                 </div>
@@ -35,7 +38,7 @@
             <div class="hidden md:flex sm:items-center sm:ms-6">
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md bg-gray-900 text-gray-400 hover:text-gray-100 focus:outline-none transition ease-in-out duration-150">
                             <!--suppress HtmlUnknownTag -->
                             <div>{{ Auth::user()->name }}</div>
                             <!--suppress HtmlUnknownTag -->
@@ -49,7 +52,7 @@
 
                     <x-slot name="content">
                         <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
+                            {{ __('Profil') }}
                         </x-dropdown-link>
 
                         <!-- Authentication -->
@@ -59,7 +62,7 @@
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                {{ __('Abmelden') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -69,7 +72,7 @@
             <!-- Hamburger -->
             <div class="-me-2 flex items-center md:hidden">
                 <!--suppress HtmlUnknownAttribute -->
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-gray-400 hover:bg-gray-900 focus:outline-none focus:bg-gray-900 focus:text-gray-400 transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -87,18 +90,18 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
+            <x-responsive-nav-link>
+                {{ __('Leaderboard') }}
+            </x-responsive-nav-link>
+
+            <x-responsive-nav-link>
+                {{ __('Tage') }}
+            </x-responsive-nav-link>
+
             @if (Auth::user()->admin)
                 {{-- only show link if user is admin, only admins should be able to create new users, lecturers & courses --}}
-                <x-responsive-nav-link>
-                    {{ __('Benutzer & Dozenten') }}
-                </x-responsive-nav-link>
-
-                <x-responsive-nav-link>
-                    {{ __('Kurse') }}
-                </x-responsive-nav-link>
-
-                <x-responsive-nav-link>
-                    {{ __('Studiengänge') }}
+                <x-responsive-nav-link :href="route('admin.index')" :active="request()->routeIs('admin.index')">
+                    {{ __('Admin') }}
                 </x-responsive-nav-link>
             @endif
         </div>
@@ -112,7 +115,7 @@
 
             <div class="mt-3 space-y-1">
                 <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
+                    {{ __('Profil') }}
                 </x-responsive-nav-link>
 
                 <!-- Authentication -->
@@ -122,7 +125,7 @@
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('Abmelden') }}
                     </x-responsive-nav-link>
                 </form>
             </div>
