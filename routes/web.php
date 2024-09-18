@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,28 @@ Route::get('/images/{imageName}', [ImageController::class, 'show'])->name('image
  */
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+
+    /**
+     * Editing of users
+     */
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])
+        ->name('users.edit');
+    Route::patch('/users/{id}', [UserController::class, 'update'])
+        ->name('users.update');
+
+    /**
+     * Creation of users
+     */
+    Route::get('/users/add', [UserController::class, 'create'])
+        ->name('users.create');
+    Route::post('/users/add', [UserController::class, 'store'])
+        ->name('users.store');
+
+    /**
+     * Deletion of users
+     */
+    Route::delete('/users/{id}/delete', [UserController::class, 'destroy'])
+        ->name('users.destroy');
 });
 
 require __DIR__.'/auth.php';
