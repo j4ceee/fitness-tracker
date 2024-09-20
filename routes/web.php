@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DayController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
 
-Route::get('/dashboard', function () {
+Route::get('my-fitness/dashboard', function () {
     return view('dashboard');})
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -21,6 +22,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // viewing days
+    Route::get('/days/{userId}/{page?}', [DayController::class, 'index'])
+        ->name('days.index');
+    Route::get('/my-fitness/{page?}', [DayController::class, 'indexMy'])
+        ->name('days.my');
+    Route::post('/my-fitness/add-today', [DayController::class, 'store'])
+        ->name('days.store');
 });
 
 // image route

@@ -15,15 +15,25 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained("users")->cascadeOnDelete();
             $table->date('date');
-            $table->integer('weight')->nullable();
-            $table->integer('training_duration');
-            $table->integer('day_calorie_goal');
+            $table->float('weight')->nullable();
+            $table->integer('training_duration'); // in minutes, 2 points per minute
+            $table->integer('day_calorie_goal')->nullable(); // calorie goal for the day (use global user goal if null)
+            $table->decimal('percentage_of_goal', 5, 4); // percentage of the goal reached (0-1)
             $table->integer('calories');
-            $table->decimal('water', 3, 1);
-            $table->integer('steps');
-            $table->integer('meals_warm');
-            $table->integer('meals_cold');
-            $table->boolean('is_cheat_day');
+
+            $table->float('water'); // water in liters (e.g. 2.5)
+            /*
+             * 3l -> 3pts
+             * 2l -> 2pts
+             * 1.5l -> 1pt
+             * <1l -> -1pt
+             */
+
+            $table->integer('steps'); // daily walking in km, 1 point for each 10km
+            $table->integer('meals_warm'); // 2pts for each meal
+            $table->integer('meals_cold'); // 1pt for each meal
+            $table->boolean('is_cheat_day'); // if true, no negative points are given
+            $table->integer('points'); // total points for the day
             $table->timestamps();
         });
     }

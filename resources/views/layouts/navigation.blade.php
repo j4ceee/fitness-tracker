@@ -21,7 +21,7 @@
                         {{ __('Leaderboard') }}
                     </x-nav-link>
 
-                    <x-nav-link>
+                    <x-nav-link :href="route('days.my')" :active="request()->routeIs('days.my')">
                         {{ __('Tage') }}
                     </x-nav-link>
 
@@ -94,7 +94,7 @@
                 {{ __('Leaderboard') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('days.my')" :active="request()->routeIs('days.my')">
                 {{ __('Tage') }}
             </x-responsive-nav-link>
 

@@ -24,12 +24,14 @@ class Day extends Model
         'weight',
         'training_duration',
         'day_calorie_goal',
+        'percentage_of_goal',
         'calories',
         'water',
         'steps',
         'meals_warm',
         'meals_cold',
         'is_cheat_day',
+        'points',
     ];
 
     public function user(): BelongsTo

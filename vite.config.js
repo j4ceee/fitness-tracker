@@ -8,6 +8,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/profile_edit.js',
+                'resources/js/day_stats.js',
             ],
             refresh: true,
         }),
