@@ -19,7 +19,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        $user = Auth::user()->with('user_stats')->first();
+        $user = $request->user();
 
         return view('profile.edit', compact('user'));
     }
@@ -123,6 +123,11 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        // check if user is last admin
+        if ($user->admin && User::where('admin', true)->count() === 1) {
+            return redirect(route('profile.edit'))->with('error', 'Dein Benutzerkonto kann nicht gelöscht werden, da du der letzte Administrator bist.');
+        }
 
         Auth::logout();
 

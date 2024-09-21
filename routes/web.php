@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DayController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -11,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
 
-Route::get('/dashboard', function () {
+Route::get('my-fitness/dashboard', function () {
     return view('dashboard');})
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -20,6 +22,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // viewing days
+    Route::get('/days/{userId}/{page?}', [DayController::class, 'index'])
+        ->name('days.index');
+    Route::get('/my-fitness/{page?}', [DayController::class, 'indexMy'])
+        ->name('days.my');
+    Route::post('/my-fitness/add-today', [DayController::class, 'store'])
+        ->name('days.store');
 });
 
 // image route
@@ -30,6 +40,28 @@ Route::get('/images/{imageName}', [ImageController::class, 'show'])->name('image
  */
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.index');
+
+    /**
+     * Editing of users
+     */
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])
+        ->name('users.edit');
+    Route::patch('/users/{id}', [UserController::class, 'update'])
+        ->name('users.update');
+
+    /**
+     * Creation of users
+     */
+    Route::get('/users/add', [UserController::class, 'create'])
+        ->name('users.create');
+    Route::post('/users/add', [UserController::class, 'store'])
+        ->name('users.store');
+
+    /**
+     * Deletion of users
+     */
+    Route::delete('/users/{id}/delete', [UserController::class, 'destroy'])
+        ->name('users.destroy');
 });
 
 require __DIR__.'/auth.php';

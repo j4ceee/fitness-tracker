@@ -2,11 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/*----------------------------------------------------General Pages----------------------------------------------------*/
+
 :root {
     --blue: #259FE2;
     --bg: #121826;
     --bg_light: #1E2A36;
+    --bg_hover: #1c2632;
     --white: #ffffff;
+    --black: #000000;
+    --orange: #eb8c59;
+    --water-blue: #24a0e1;
+    --gray: #4c5660;
 }
 
 .dark_bg {
@@ -17,6 +24,11 @@
 .light_bg {
     background-color: var(--bg_light);
     color: var(--white);
+}
+
+.blue_bg {
+    background-color: var(--blue);
+    color: var(--black);
 }
 
 .blue_border {
@@ -35,4 +47,390 @@
 .req {
     color: red;
     font-weight: bold;
+}
+
+.text_icon_button {
+    padding: 0.5rem 1rem;
+    height: min-content;
+}
+
+.text_icon_button img {
+    height: 1rem;
+    width: 1rem;
+    padding: 0;
+    margin-left: 0.5rem;
+}
+
+/*------------------------Alerts-------------------------------*/
+
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1.5rem;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 3px 10px rgba(114, 114, 113, 0.4);
+}
+
+.alert-error {
+    background-color: rgb(220 38 38);
+    color: var(--black);
+    /* white text outline */
+    stroke: 1px var(--white);
+    display: flex !important;
+}
+
+.alert-success {
+    background-color: #95e81d;
+    color: var(--black);
+    display: flex !important;
+}
+
+.alert-info {
+    background-color: var(--blue);
+    color: var(--black);
+    display: flex !important;
+}
+
+/*------------------------Progress Circle-------------------------------*/
+/* https://codepen.io/yichinweng/pen/WNvXevO */
+
+.progress_circle {
+    width: 100%;
+    height: 100%;
+    margin: auto;
+    display: block;
+}
+
+.progress_circle path {
+    stroke-linecap: round;
+    stroke-width: 7; /* change this to change the thickness of the circle */
+}
+
+.progress_circle path.grey {
+    stroke: #37373e;
+}
+
+.progress_circle path.blue {
+    stroke: url(#gradient);
+    stroke-dasharray: 198;
+    stroke-dashoffset: 198;
+    animation: dash 3s ease-out forwards;
+}
+
+.cal_stats {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.progress_bar_cont {
+    position: relative;
+    width: 12rem;
+    height: 12rem;
+}
+
+/*------------------------Days Page-------------------------------*/
+.day_form {
+    padding: 1rem;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.day_form_header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.day_form_content {
+    margin: 3rem 0 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 2rem;
+    row-gap: 3rem;
+    justify-content: center;
+}
+
+@media (max-width: 815px) {
+    .day_form_content fieldset {
+        flex-grow: 1;
+    }
+
+    .day_form_placeholder {
+        display: none !important;
+    }
+}
+
+.day_form_cat {
+    padding: 1rem;
+    min-width: 10rem;
+    width: 22rem;
+    border-radius: .7rem;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 1rem;
+    position: relative;
+}
+
+.day_form_cat legend {
+    position: absolute;
+    top: -1.7rem;
+    left: 0.4rem;
+    font-weight: bold;
+    color: var(--white);
+}
+
+.day_form_nutrition,
+.day_form_meals {
+    background-color: #15c1a0;
+    color: #404040;
+    font-weight: bold;
+}
+
+.day_form_nutrition label,
+.day_form_meals label {
+    color: #404040;
+    font-weight: bold;
+}
+
+.day_form_activ {
+    background-color: var(--orange);
+    color: var(--white);
+    font-weight: bold;
+}
+
+.day_form_activ label,
+.day_form_water label {
+    color: var(--white);
+    font-weight: bold;
+}
+
+.day_form_water {
+    background-color: var(--water-blue);
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.water_btn {
+    background-color: var(--white);
+    color: var(--water-blue);
+    border: none;
+    border-radius: 100%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.water_btn[disabled] {
+    opacity: 0.5;
+}
+
+.water_btn span {
+    position: absolute;
+    font-weight: bolder;
+    font-size: 1.7rem;
+}
+
+.day_form_misc {
+    background-color: var(--gray);
+    color: var(--white);
+}
+
+.day_form_activ input,
+.day_form_water input,
+.day_form_nutrition input,
+.day_form_meals input {
+    background-color: var(--white);
+    color: var(--black);
+    border: none;
+    font-weight: normal;
+}
+
+/*----------------------------------------------------Admin Pages----------------------------------------------------*/
+
+/*------------------------Admin Tables-------------------------------*/
+
+.user_list_bg {
+    display: flex;
+    background-color: var(--bg_light);
+    border-radius: 1rem;
+    width: 100%;
+}
+
+.user_grid {
+    font-weight: 400;
+    font-style: normal;
+    border-collapse: collapse;
+    width: 100%;
+    border-radius: 1rem;
+    overflow: hidden;
+}
+
+.ausgabe_user_head p, .user_info, .user_actions {
+    text-align: left;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.ausgabe_user_head {
+    border-bottom: 1px solid var(--bg);
+}
+
+.ausgabe_user_head p {
+    text-transform: uppercase;
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+}
+
+.ausgabe_user_head p span {
+    position: relative;
+    width: fit-content;
+    padding-right: 1rem;
+    height: 100%;
+}
+
+.ausgabe_user_head p span::after {
+    content: '';
+    width: 100%;
+    height: 3px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-radius: 1rem 0 0 1rem;
+    background-color: var(--blue);
+    transition: .1s;
+}
+
+.user_list {
+    width: 100%;
+}
+
+.user_list div:nth-child(even):is(.user_card) {
+    background-color: var(--bg_hover);
+}
+
+.user_list .user_card {
+    padding-top: .9rem;
+    padding-bottom: .9rem;
+}
+
+.user_card_content, .ausgabe_user_head {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.user_card {
+    width: 100%;
+    position: relative;
+    transition: .1s
+}
+
+.user_card:hover,
+.user_card:focus-within {
+    background-color: var(--bg_hover);
+    transition: .1s;
+}
+
+.user_card::after {
+    content: '';
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    border-radius: 0 1rem 1rem 0;
+    background-color: var(--blue);
+    transition: .1s;
+}
+
+.user_card:hover::after,
+.user_card:focus-within::after {
+    transition: .1s;
+    height: 80%;
+    top: 10%;
+    width: .4rem;
+}
+
+.user_info {
+    grid-column: 1;
+}
+
+.user_actions {
+    grid-column: 2;
+}
+
+.user_info_grid {
+    display: inline-block;
+}
+
+.user_grid_items {
+    display: inline-block;
+}
+
+.admin-users-icons {
+    box-sizing: content-box;
+    width: 1.3rem;
+    height: 1.3rem;
+    opacity: 0.75;
+    transition: .2s;
+    padding: .5rem 1rem;
+}
+
+.admin-users-icons:hover,
+.admin-users-icons:focus-within {
+    transform: scale(1.2);
+    opacity: 1;
+    transition: .2s;
+}
+
+.admin-users-danger,
+.admin-users-action {
+    padding: 0 !important;
+}
+
+.admin-users-danger .admin-users-icons {
+    opacity: 1;
+}
+
+@media (max-width: 600px) {
+    .actions_header {
+        display: none;
+    }
+
+    .user_card {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .user_card_content {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+        width: 100%;
+        max-width: 25rem;
+    }
+
+    .user_info {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+    }
+
+    .user_actions {
+        align-self: flex-end;
+    }
 }

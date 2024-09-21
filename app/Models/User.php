@@ -66,12 +66,12 @@ class User extends Authenticatable
         return $this->hasOne(UserStats::class);
     }
 
-    public function day(): HasMany
+    public function days(): HasMany
     {
         return $this->hasMany(Day::class);
     }
 
-    public function user_monthly(): HasMany
+    public function user_monthlies(): HasMany
     {
         return $this->hasMany(UserMonthly::class);
     }

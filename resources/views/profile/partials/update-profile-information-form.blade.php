@@ -26,7 +26,7 @@
         <div>
             <x-input-label for="name" :value="__('Name')" :required="true"/>
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)"
-                          required autofocus autocomplete="name"/>
+                          required autocomplete="name"/>
             <x-input-error class="mt-2" :messages="$errors->get('name')"/>
         </div>
 
@@ -76,7 +76,7 @@
             <p class="my-1 text-gray-400 text-sm">{{ __('Wird verwendet, wenn an einem Tag kein spezifisches Ziel angegeben wird.') }}</p>
             <div class="w-6/12 flex gap-2 items-center">
                 <x-number-input id="cal_goal" name="cal_goal" min="0" max="10000" step="1" class="flex-grow mt-1" :value="old('cal_goal', $user->user_stats->global_calorie_goal)"
-                                required autofocus/>
+                                required/>
                 <p class="mt-1 w-1/12">kcal</p>
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('cal_goal')"/>
@@ -87,7 +87,7 @@
             <x-input-label for="height" :value="__('Größe')"/>
             <div class="w-6/12 flex gap-2 items-center">
                 <x-number-input id="height" name="height" min="0" max="300" step="1" class="flex-grow mt-1" :value="old('height', $user->user_stats->height)"
-                                autofocus/>
+                                />
                 <p class="mt-1 w-1/12">cm</p>
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('height')"/>
@@ -98,7 +98,7 @@
             <x-input-label for="start_weight" :value="__('Startgewicht')"/>
             <div class="w-6/12 flex gap-2 items-center">
                 <x-number-input id="start_weight" name="start_weight" min="0" max="200" step=".1" class="flex-grow mt-1" :value="old('start_weight', $user->user_stats->start_weight)"
-                                autofocus/>
+                                />
                 <p class="mt-1 w-1/12">kg</p>
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('start_weight')"/>
@@ -109,7 +109,7 @@
             <x-input-label for="target_weight" :value="__('Zielgewicht')"/>
             <div class="w-6/12 flex gap-2 items-center">
                 <x-number-input id="target_weight" name="target_weight" min="0" max="200" step=".1" class="flex-grow mt-1" :value="old('target_weight', $user->user_stats->target_weight)"
-                                autofocus/>
+                                />
                 <p class="mt-1 w-1/12">kg</p>
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('target_weight')"/>
@@ -117,11 +117,11 @@
 
         {{-- step goal --}}
         <div>
-            <x-input-label for="step_goal" :value="__('Persönliches m-Ziel')"/>
+            <x-input-label for="step_goal" :value="__('Persönliches km-Ziel')"/>
             <div class="w-6/12 flex gap-2 items-center">
-                <x-number-input id="step_goal" name="step_goal" min="0" max="20000" step="1" class="flex-grow mt-1" :value="old('step_goal', $user->user_stats->step_goal)"
-                                autofocus/>
-                <p class="mt-1 w-1/12">m</p>
+                <x-number-input id="step_goal" name="step_goal" min="0" max="40" step=".5" class="flex-grow mt-1" :value="old('step_goal', $user->user_stats->step_goal)"
+                                />
+                <p class="mt-1 w-1/12">km</p>
             </div>
             <x-input-error class="mt-2" :messages="$errors->get('step_goal')"/>
         </div>
