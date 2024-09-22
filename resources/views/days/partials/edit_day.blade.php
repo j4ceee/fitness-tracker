@@ -1,14 +1,21 @@
-<form method="post" action="{{ route('days.store') }}" class="day_form light_bg">
+@if ($day->id ?? null)
+    <form method="post" action="{{ route('days.update', $day->id) }}" class="day_form light_bg">
+        @method('PATCH')
+@elseif (request()->routeIs('days.my'))
+    <form method="post" action="{{ route('days.my.create') }}" class="day_form light_bg">
+        @method('PUT')
+@endif
     @csrf
-    <h2 class="text-lg font-semibold text-gray-300">Heute, <time datetime="@php echo date('Y-m-d'); @endphp" class="text-xl text-white">@php echo date('d.m.Y'); @endphp</time></h2>
-
+    @if (request()->routeIs('days.my'))
+        <h2 class="text-lg font-semibold text-gray-300">Heute, <time datetime="@php echo date('Y-m-d'); @endphp" class="text-xl text-white">@php echo date('d.m.Y'); @endphp</time></h2>
+    @endif
     <div class="day_form_header">
         {{-- Progress Circle, https://codepen.io/yichinweng/pen/WNvXevO --}}
         <div class="progress_bar_cont" id="progress_bar_cont" data-progress="{{ $day->percentage_of_goal ?? 0 }}">
             <div class="cal_stats">
                 <p id="cal_progress_text" class="text-lg font-bold m-0 p-0 leading-5">{{ $day->calories ?? 0 }}</p>
                 <p class="text-gray-400 font-bold m-0 p-0 leading-5">
-                    / <span id="cal_goal_text">{{ $day->day_calorie_goal ?? $user->user_stats->global_calorie_goal }}</span></p>
+                    / <span id="cal_goal_text">{{ $day->day_calorie_goal ?? $user->user_stats->global_calorie_goal ?? 0 }}</span></p>
                 <p class="text-sm text-gray-500 font-bold m-0 p-0 leading-none absolute bottom-11">kcal</p>
             </div>
 
@@ -24,8 +31,12 @@
 
         <div class="ml-4">
             <p class="text-sm text-gray-400">{{__('Punkte:')}}</p>
-            @if ($day->points ?? null)
-                <p class="text-2xl font-bold text-gray-300">{{ $day->points }}</p>
+            @if ($day->id ?? null)
+                @if ($day->points >= 1)
+                    <p class="text-2xl font-bold text-green-300">{{ $day->points }}</p>
+                @else
+                    <p class="text-2xl font-bold text-red-500">{{ $day->points }}</p>
+                @endif
             @else
                 <p class="text-2xl font-bold text-red-500">0 <span class="text-gray-500 text-sm">{{__('(Bitte speichern)')}}</span></p>
             @endif
@@ -34,16 +45,26 @@
 
     <div class="day_form_content">
         <fieldset class="day_form_cat day_form_nutrition">
-            <legend>{{__('Ernährung')}}</legend>
+            <legend class="day_form_cat_h">{{__('Ernährung')}}</legend>
             {{-- Day Calorie Goal --}}
             <div>
-                <x-input-label for="day_calorie_goal" :value="__('Tägl. Kalorienziel')"/>
+                @if ($user->user_stats->global_calorie_goal ?? null)
+                    <x-input-label for="day_calorie_goal" :value="__('Tägl. Kalorienziel')"/>
+                @else
+                    <x-input-label for="day_calorie_goal" :value="__('Tägl. Kalorienziel')" :required="true"/>
+                @endif
                 {{-- <p class="my-1 text-gray-400 text-sm">{{ __('Verwendet das im Profil festgelegte globale Kalorienziel, falls keines gesetzt wird.') }}</p> --}}
                 <div class="w-6/12 flex gap-2 items-center">
-                    <x-number-input id="day_calorie_goal" name="day_calorie_goal" min="0" max="10000" step="1"
-                                    class="flex-grow mt-1"
-                                    :value="old('day_calorie_goal', $day->day_calorie_goal ?? '')"
-                                    placeholder="{{ $user->user_stats->global_calorie_goal }}"/>
+                    @if ($user->user_stats->global_calorie_goal ?? null)
+                        <x-number-input id="day_calorie_goal" name="day_calorie_goal" min="0" max="10000" step="1"
+                                        class="flex-grow mt-1"
+                                        :value="old('day_calorie_goal', $day->day_calorie_goal ?? '')"
+                                        placeholder="{{ $user->user_stats->global_calorie_goal }}"/>
+                    @else
+                        <x-number-input id="day_calorie_goal" name="day_calorie_goal" min="0" max="10000" step="1"
+                                        class="flex-grow mt-1"
+                                        :value="old('day_calorie_goal', $day->day_calorie_goal ?? 0)" required/>
+                    @endif
                     <p class="mt-1 w-1/12">kcal</p>
                 </div>
                 <x-input-error class="mt-2" :messages="$errors->get('day_calorie_goal')"/>
@@ -63,7 +84,7 @@
         </fieldset>
 
         <fieldset class="day_form_cat day_form_meals">
-            <legend>{{__('Meal-Tracker')}}</legend>
+            <legend class="day_form_cat_h">{{__('Meal-Tracker')}}</legend>
             {{-- Meals Warm --}}
             <div>
                 <x-input-label for="meals_warm" :value="__('Warm')" :required="true"/>
@@ -90,7 +111,7 @@
         </fieldset>
 
         <fieldset class="day_form_cat day_form_water">
-            <legend>{{__('Wasser-Tracker')}}</legend>
+            <legend class="day_form_cat_h">{{__('Wasser-Tracker')}}</legend>
             {{-- Water --}}
             <x-input-label for="water" :value="__('Wasser')" :required="true"/>
 
@@ -101,7 +122,7 @@
             <div class="w-full flex items-center gap-3 justify-center">
                 <button class="water_btn" id="water_btn_minus" type="button"><span>-</span></button>
                 <p class="text-xl font-bold"><span
-                        id="water_count">{{ old('water', $day->water ?? '0') }}</span> {{__('L')}}</p>
+                        id="water_count">{{ number_format(old('water', $day->water ?? '0'), 2) }}</span> {{__('L')}}</p>
                 <button class="water_btn" id="water_btn_plus" type="button"><span>+</span></button>
             </div>
 
@@ -109,7 +130,7 @@
         </fieldset>
 
         <fieldset class="day_form_cat day_form_activ">
-            <legend>{{__('Aktivitäten')}}</legend>
+            <legend class="day_form_cat_h">{{__('Aktivitäten')}}</legend>
 
             {{-- Training Minutes --}}
             <div>
@@ -138,14 +159,14 @@
         </fieldset>
 
         <fieldset class="day_form_cat day_form_misc">
-            <legend>{{__('Weiteres')}}</legend>
+            <legend class="day_form_cat_h">{{__('Weiteres')}}</legend>
 
             {{-- Is this day a cheat day? --}}
             <div>
                 <div class="w-6/12 flex gap-2 items-center">
                     <x-input-label for="is_cheat_day" :value="__('Cheat Day')"/>
                     <input type="hidden" name="is_cheat_day" value="0">
-                    <input type="checkbox" id="is_cheat_day" name="is_cheat_day" class="mt-1" value="1" {{ old('is_cheat_day', $day->is_cheat_day) ? 'checked' : '' }}>
+                    <input type="checkbox" id="is_cheat_day" name="is_cheat_day" class="mt-1" value="1" {{ old('is_cheat_day', $day->is_cheat_day ?? false) ? 'checked' : '' }}>
                 </div>
                 <x-input-error class="mt-2" :messages="$errors->get('is_cheat_day')"/>
             </div>
@@ -166,9 +187,7 @@
         <div class="day_form_cat day_form_placeholder">
         </div>
     </div>
-    <div class="flex items-center gap-4">
-        <x-primary-button type="submit">{{ __('Speichern') }}</x-primary-button>
-
+    <div class="flex items-center justify-end gap-4">
         @if (session('status'))
             <p x-data="{ show: true }"
                x-show="show"
@@ -181,13 +200,9 @@
                 @elseif (session('status') === 'day-no-changes')
                     {{ __('Keine Veränderungen.') }}
                 @endif
-
-                @if (session('info'))
-                    {{ session('info') }}
-                @endif
-
             </p>
         @endif
+
+        <x-primary-button type="submit">{{ __('Speichern') }}</x-primary-button>
     </div>
 </form>
-

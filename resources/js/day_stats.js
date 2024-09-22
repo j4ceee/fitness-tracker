@@ -85,16 +85,16 @@ window.onload = function() {
     let waterCount = document.getElementById('water_count');
     let waterInput = document.getElementById('water');
 
-    waterCount.innerHTML = parseFloat(waterInput.value).toFixed(2);
-
     if (parseFloat(waterInput.value) === 3) {
         // set visibility to hidden
         water_plus.style.opacity = '0.5';
+        water_plus.style.cursor = 'default';
     }
 
     if (parseFloat(waterInput.value) === 0) {
         // set visibility to hidden
         water_minus.style.opacity = '0.5';
+        water_minus.style.cursor = 'default';
     }
 
     water_plus.addEventListener('click', function() {
@@ -102,9 +102,11 @@ window.onload = function() {
 
         if (parseFloat(waterInput.value) === 3) {
             water_plus.style.opacity = '0.5';
+            water_plus.style.cursor = 'default';
         }
         if (parseFloat(waterInput.value) > 0) {
             water_minus.style.opacity = '1';
+            water_minus.style.cursor = 'pointer';
         }
     });
 
@@ -113,9 +115,11 @@ window.onload = function() {
 
         if (parseFloat(waterInput.value) < 3) {
             water_plus.style.opacity = '1';
+            water_plus.style.cursor = 'pointer';
         }
         if (parseFloat(waterInput.value) === 0) {
             water_minus.style.opacity = '0.5';
+            water_minus.style.cursor = 'default';
         }
     });
 }

@@ -26,10 +26,18 @@ Route::middleware('auth')->group(function () {
     // viewing days
     Route::get('/days/{userId}/{page?}', [DayController::class, 'index'])
         ->name('days.index');
+    Route::get('/day/{userId}/{date}', [DayController::class, 'indexDay'])
+        ->name('days.day');
+
     Route::get('/my-fitness/{page?}', [DayController::class, 'indexMy'])
         ->name('days.my');
-    Route::post('/my-fitness/add-today', [DayController::class, 'store'])
-        ->name('days.store');
+    Route::put('/my-fitness/add-today', [DayController::class, 'store'])
+        ->name('days.my.create');
+
+    Route::get('/my-fitness/{id}/edit', [DayController::class, 'edit'])
+        ->name('days.edit');
+    Route::patch('/my-fitness/{id}/update', [DayController::class, 'update'])
+        ->name('days.update');
 });
 
 // image route

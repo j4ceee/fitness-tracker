@@ -34,6 +34,10 @@ class Day extends Model
         'points',
     ];
 
+    protected $casts = [
+        'date' => 'datetime',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
