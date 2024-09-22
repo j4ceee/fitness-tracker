@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [HomeController::class, 'index'])
     ->name('home');
 
-Route::get('my-fitness/dashboard', function () {
+Route::get('/my-fitness/dashboard', function () {
     return view('dashboard');})
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
@@ -25,18 +25,27 @@ Route::middleware('auth')->group(function () {
 
     // viewing days
     Route::get('/days/{userId}/{page?}', [DayController::class, 'index'])
-        ->name('days.index');
+        ->name('days.index')
+        ->where('userId', '[0-9]+')
+        ->where('page', '[0-9]+');
+    // viewing a single day
     Route::get('/day/{userId}/{date}', [DayController::class, 'indexDay'])
         ->name('days.day');
-
+    // viewing my days (same as days.index but with the user id automatically set to the logged-in user)
     Route::get('/my-fitness/{page?}', [DayController::class, 'indexMy'])
-        ->name('days.my');
-    Route::put('/my-fitness/add-today', [DayController::class, 'store'])
-        ->name('days.my.create');
+        ->name('days.my')
+        ->where('page', '[0-9]+');
 
+    // creating and storing days
+    Route::get('/my-fitness/add', [DayController::class, 'create'])
+        ->name('days.create');
+    Route::put('/my-fitness/add', [DayController::class, 'store'])
+        ->name('days.store');
+
+    // editing and updating days
     Route::get('/my-fitness/{id}/edit', [DayController::class, 'edit'])
         ->name('days.edit');
-    Route::patch('/my-fitness/{id}/update', [DayController::class, 'update'])
+    Route::patch('/my-fitness/{id}/edit', [DayController::class, 'update'])
         ->name('days.update');
 });
 

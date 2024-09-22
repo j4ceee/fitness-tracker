@@ -15,6 +15,13 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+
+            <div class="flex justify-end mb-6">
+                <x-blue-button-link @class(["text_icon_button"]) href="{{ route('days.create') }}">
+                    <p>{{ __('Tag anlegen') }}</p><img src="{{ route('image.show', 'noun-plus-6413839.svg') }}" alt="">
+                </x-blue-button-link>
+            </div>
+
             @if ($page === 0)
                 @if ($user == Auth::user())
                     @include('days.partials.edit_day', ['day' => $day, 'user' => $user])
@@ -147,6 +154,8 @@
                             </div>
                         </div>
                     @endforeach
+                        <div class="day day_placeholder">
+                        </div>
                         <div class="day day_placeholder">
                         </div>
                 </div>

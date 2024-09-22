@@ -1,14 +1,27 @@
 @if ($day->id ?? null)
     <form method="post" action="{{ route('days.update', $day->id) }}" class="day_form light_bg">
         @method('PATCH')
-@elseif (request()->routeIs('days.my'))
-    <form method="post" action="{{ route('days.my.create') }}" class="day_form light_bg">
+@elseif (request()->routeIs('days.my') || request()->routeIs('dashboard') || request()->routeIs('days.create'))
+    <form method="post" action="{{ route('days.store') }}" class="day_form light_bg">
         @method('PUT')
 @endif
     @csrf
-    @if (request()->routeIs('days.my'))
+    @if (request()->routeIs('days.my') || request()->routeIs('dashboard'))
         <h2 class="text-lg font-semibold text-gray-300">Heute, <time datetime="@php echo date('Y-m-d'); @endphp" class="text-xl text-white">@php echo date('d.m.Y'); @endphp</time></h2>
     @endif
+
+    @unless($day->id ?? null || request()->routeIs('days.my') || request()->routeIs('dashboard'))
+        {{-- when creating a new day & not on the dashboard or my days page --}}
+        <fieldset class="day_form_date">
+            <x-input-label for="date" :value="__('Datum')" :required="true"/>
+            <x-date-input id="date" name="date" class="flex-grow mt-1"
+                          :value="old('date', date('Y-m-d'))"
+                          required/>
+        </fieldset>
+    @elseif (request()->routeIs('days.my') || request()->routeIs('dashboard'))
+        <input type="hidden" id="date" name="date" value="{{ date('Y-m-d') }}">
+    @endunless
+
     <div class="day_form_header">
         {{-- Progress Circle, https://codepen.io/yichinweng/pen/WNvXevO --}}
         <div class="progress_bar_cont" id="progress_bar_cont" data-progress="{{ $day->percentage_of_goal ?? 0 }}">

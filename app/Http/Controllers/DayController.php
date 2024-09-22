@@ -72,9 +72,11 @@ class DayController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): View
     {
-        //
+        $user = Auth::user();
+
+        return view('days.create', compact('user'));
     }
 
     /**
@@ -84,9 +86,15 @@ class DayController extends Controller
     public function store(Request $request): RedirectResponse
     {
         return DB::transaction(function () use ($request) {
-            $today = now()->startOfDay();
+
+            $request->validate([
+                'date' => ['required', 'date'],
+            ]);
+
+            $date = $request->date;
+
             // check if day already exists for the user
-            $day = $request->user()->days()->where('date', $today)->first();
+            $day = $request->user()->days()->where('date', $date)->first();
 
             if ($day) {
                 return redirect()->route('days.my')->with('error', 'Der Tag wurde bereits angelegt.');
@@ -94,18 +102,18 @@ class DayController extends Controller
 
             $this->validateDay($request);
 
-            $userMonthly = $request->user()->user_monthlies()->where('month', now()->startOfMonth())->first();
-            // check if the user has a user_monthlies entry for the current month
+            $userMonthly = $request->user()->user_monthlies()->where('month', date('Y-m-01', strtotime($date)))->first();
+            // check if the user has a user_monthlies entry for the month of the day
             if (!$userMonthly) {
                 $userMonthly = UserMonthly::create([
                     'user_id' => $request->user()->id,
-                    'month' => now()->startOfMonth(),
+                    'month' => date('Y-m-01', strtotime($date)),
                 ]);
             } else {
                 // check if the user has any cheat days left
                 $cheatDays = $userMonthly->cheat_days_used;
                 if ($cheatDays >= Config::get('constants.max_cheat_days') && $request->is_cheat_day) {
-                    return redirect()->route('days.my')->with('error', 'Du hast keine Cheat-Days mehr übrig.');
+                    return redirect()->route('days.my')->with('error', 'Du hast keine Cheat-Days mehr übrig: ' . $cheatDays . ' von ' . Config::get('constants.max_cheat_days') . ' verbraucht.');
                 }
             }
 
@@ -131,7 +139,7 @@ class DayController extends Controller
 
             try {
                 $request->user()->days()->create([
-                    'date' => $today,
+                    'date' => $date,
                     'weight' => $request->weight,
                     'training_duration' => $request->training_duration,
                     'day_calorie_goal' => $dayCalorieGoal,
@@ -155,7 +163,8 @@ class DayController extends Controller
             $userMonthly->save();
 
             return redirect()->route('days.my')
-                ->with('status', 'day-updated');
+                ->with('status', 'day-updated')
+                ->with('success', 'Der Tag ' .  date('d.m.Y', strtotime($date)) . ' wurde erfolgreich angelegt.');
         });
     }
 
@@ -198,7 +207,7 @@ class DayController extends Controller
                 return redirect()->route('days.my')->with('error', 'Der Tag konnte nicht gefunden werden.');
             }
 
-            $userMonthly = $request->user()->user_monthlies()->where('month', now()->startOfMonth())->first();
+            $userMonthly = $request->user()->user_monthlies()->where('month', date('Y-m-01', strtotime($day->date)))->first();
 
             $this->validateDay($request);
 
@@ -206,7 +215,7 @@ class DayController extends Controller
             if (!$userMonthly) {
                 $userMonthly = UserMonthly::create([
                     'user_id' => $request->user()->id,
-                    'month' => now()->startOfMonth(),
+                    'month' => date('Y-m-01', strtotime($day->date)),
                 ]);
             }
 
@@ -219,7 +228,7 @@ class DayController extends Controller
             $newCheatDays = $userMonthly->cheat_days_used + $cheatDayDifference;
 
             if ($newCheatDays > Config::get('constants.max_cheat_days')) {
-                return redirect()->route('days.my')->with('error', 'Du hast keine Cheat-Days mehr übrig: ' . $userMonthly->cheat_days_used . ' von ' . Config::get('constants.max_cheat_days'));
+                return redirect()->route('days.my')->with('error', 'Du hast keine Cheat-Days mehr übrig: ' . $userMonthly->cheat_days_used . ' von ' . Config::get('constants.max_cheat_days') . ' verbraucht.');
             }
 
             if ($request->day_calorie_goal) {
