@@ -9,6 +9,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/profile_edit.js',
                 'resources/js/day_stats.js',
+                'resources/js/leaderboard.js',
             ],
             refresh: true,
         }),

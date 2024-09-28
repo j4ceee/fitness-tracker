@@ -1,5 +1,3 @@
-@vite(['resources/js/day_stats.js'])
-
 <x-app-layout>
     <x-slot name="header">
         <h1 class="font-semibold text-xl text-gray-100 leading-tight">
@@ -22,27 +20,19 @@
                 </x-blue-button-link>
             </div>
 
-            @if ($page === 0)
-                @if ($user == Auth::user())
-                    @include('days.partials.edit_day', ['day' => $day, 'user' => $user])
-                @else
-                    @include('days.partials.view_day', ['day' => $day, 'user' => $user])
-                @endif
-            @endif
-
             <div class="mt-12">
                 <div class="flex justify-center gap-4 mb-8">
-                    @if ($page > 0)
-                        <x-blue-button-link :href="route('days.my', ['page' => $page - 1])" title="{{ __('Nächster Monat') }}">
-                            <span class="month_control_icon" aria-hidden="true"><</span>
-                        </x-blue-button-link>
-                    @endif
+                    <x-blue-button-link :href="route('days.my', ['page' => $page + 1])" title="{{ __('Vorheriger Monat') }}">
+                        <span class="month_control_icon" aria-hidden="true"><</span>
+                    </x-blue-button-link>
                     <h2 class="text-2xl font-bold">
                         {{ now()->subMonths($page)->translatedFormat('F Y') }}
                     </h2>
-                    <x-blue-button-link :href="route('days.my', ['page' => $page + 1])" title="{{ __('Vorheriger Monat') }}">
-                        <span class="month_control_icon" aria-hidden="true">></span>
-                    </x-blue-button-link>
+                    @if ($page > 0)
+                        <x-blue-button-link :href="route('days.my', ['page' => $page - 1])" title="{{ __('Nächster Monat') }}">
+                            <span class="month_control_icon" aria-hidden="true">></span>
+                        </x-blue-button-link>
+                    @endif
                 </div>
 
                 <div class="mb-16 month_statistics mx-auto">
@@ -69,10 +59,17 @@
                             @endif
 
                             <h3>{{ $day->date->translatedFormat('l, j. M Y') }}</h3>
-                            <div class="flex flex-col w-full gap-4 items-center mt-2">
+                            <details>
+                                <summary>
+                                    @if ($day->points >= 1)
+                                        <span class="day_details leading-8 text-xl font-bold text-green-300">+{{ $day->points }}</span>
+                                    @else
+                                        <span class="day_details leading-8 text-xl font-bold text-red-500">{{ $day->points }}</span>
+                                    @endif
+                                </summary>
                                 <div class="flex w-full justify-evenly">
 
-                                    <div class="w-1/2 flex justify-center">
+                                    <div class="w-2/5 flex justify-center">
                                         <div>
                                             <p class="leading-3">{{ __('Punkte:') }}</p>
                                             @if ($day->points >= 1)
@@ -83,7 +80,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="w-1/2 flex justify-center">
+                                    <div class="flex justify-center flex-grow">
                                         <div class="flex flex-col w-half gap-2 items-center">
                                             <progress class="day_cal_progress" max="1" value="{{ $day->percentage_of_goal }}"></progress>
                                             <p class="inline-block">
@@ -94,14 +91,14 @@
                                 </div>
                                 <div class="flex w-full justify-evenly">
 
-                                    <div class="w-1/2 flex justify-center">
+                                    <div class="w-2/5 flex justify-center">
                                         <p class="text-xl font-bold">
                                             <span id="water_count">{{ number_format($day->water, 2) }}</span>
                                             {{__('L')}}
                                         </p>
                                     </div>
 
-                                    <div class="w-1/2 flex justify-center gap-2">
+                                    <div class="flex justify-center gap-2 flex-grow">
                                         @if (request()->routeIs('days.my') || Auth::user() == $user)
                                             <x-secondary-button-link @class(["admin-users-action"]) href="{{ route('days.edit', $day->id) }}">
                                                 <img class="admin-users-icons" src="{{ route('image.show', 'noun-edit-1047822.svg') }}" title="{{ $day->date->format('d.m.Y') }} bearbeiten" alt="{{ $day->date->format('d.m.Y') }} bearbeiten">
@@ -112,7 +109,7 @@
                                             </x-danger-button>
 
                                             <x-modal name="confirm-user-deletion-{{ $day->id }}" :show="$errors->userDeletion->isNotEmpty()" focusable>
-                                                <form method="post" action="" class="p-6">
+                                                <form method="post" class="p-6" action="{{ route('days.destroy', $day->id) }}">
                                                     @csrf
                                                     @method('delete')
 
@@ -151,13 +148,14 @@
                                         @endif
                                     </div>
                                 </div>
-                            </div>
+                            </details>
                         </div>
                     @endforeach
-                        <div class="day day_placeholder">
-                        </div>
-                        <div class="day day_placeholder">
-                        </div>
+
+                    <div class="day day_placeholder">
+                    </div>
+                    <div class="day day_placeholder">
+                    </div>
                 </div>
             </div>
         </div>

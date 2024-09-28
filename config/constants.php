@@ -17,7 +17,7 @@ return [
         'options' => range(0, 210, 15),
     ],
     'steps' => [
-        'options' => range(0, 40, 0.5),
+        'options' => range(0, 40, 10),
     ],
     'weight' => [
         'min' => 0,
@@ -45,5 +45,8 @@ return [
         'steps_per_point' => 10,
         'warm_meal_points' => 2,
         'cold_meal_points' => 1,
+        'alcohol_points' => -5,
+        'fast_food_points' => -2,
+        'sweets_points' => -1,
     ],
 ];

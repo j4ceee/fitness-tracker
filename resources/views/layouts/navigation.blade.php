@@ -17,12 +17,12 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link>
+                    <x-nav-link :href="route('leaderboard')" :active="request()->routeIs('leaderboard')">
                         {{ __('Leaderboard') }}
                     </x-nav-link>
 
                     <x-nav-link :href="route('days.my')" :active="request()->routeIs('days.my')">
-                        {{ __('Tage') }}
+                        {{ __('Kalender') }}
                     </x-nav-link>
 
                     @if (Auth::user()->admin)
@@ -90,12 +90,12 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('leaderboard')" :active="request()->routeIs('leaderboard')">
                 {{ __('Leaderboard') }}
             </x-responsive-nav-link>
 
             <x-responsive-nav-link :href="route('days.my')" :active="request()->routeIs('days.my')">
-                {{ __('Tage') }}
+                {{ __('Kalender') }}
             </x-responsive-nav-link>
 
             @if (Auth::user()->admin)

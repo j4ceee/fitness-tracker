@@ -15,6 +15,7 @@
     --water-blue: #24a0e1;
     --gray: #4c5660;
     --cyan: #15c1a0;
+    --red: #EF4444FF;
 }
 
 .dark_bg {
@@ -228,7 +229,8 @@
 }
 
 .day_form_activ label,
-.day_form_water label {
+.day_form_water label,
+.day_form_neg label {
     color: var(--white);
     font-weight: bold;
 }
@@ -265,6 +267,11 @@
 
 .day_form_misc {
     background-color: var(--gray);
+    color: var(--white);
+}
+
+.day_form_neg {
+    background-color: var(--red);
     color: var(--white);
 }
 
@@ -358,6 +365,22 @@
     left: .5rem;
 }
 
+.day details[open] .day_details {
+    display: none;
+}
+
+.day details summary {
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+}
+
+.day details[open] summary {
+    position: absolute;
+    width: 100%;
+    height: 40%;
+}
+
 .cheat_day_icon {
     position: absolute;
     top: 0;
@@ -391,6 +414,170 @@
     padding-bottom: .2rem;
     color: var(--bg_light);
 }
+
+/*------------------------Leaderboard-------------------------------*/
+
+.lb_vars {
+    --team-height: 3.5rem;
+    --team-spacing: 1rem;
+}
+
+.leaderboard_container {
+    width: 100%;
+    height: calc((var(--team-height) + var(--team-spacing))* var(--team-count));
+    position: relative;
+}
+
+.team,
+.lb_info_container {
+    --color: var(--bg_light);
+
+    position: absolute;
+    width: 90%;
+    height: var(--team-height);
+    background: var(--color);
+    color: var(--white);
+    box-shadow: 0 3px 5px #0000001f;
+    left: 50%;
+    transform: translateX(-50%);
+    top: calc((var(--i) + .1) * (var(--team-height) + var(--team-spacing)));
+    display: flex;
+    align-items: center;
+    transition-property: top, background, width, height;
+    transition-duration: 500ms;
+    border-radius: 10px;
+    overflow: hidden;
+    transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.team_info {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.team.plc-1,
+.plc-1 .rank {
+    --color: var(--water-blue);
+    color: var(--black);
+}
+
+.team.plc-1 {
+    width: 97%;
+    padding: 0 3.5% 0 0;
+    height: calc(var(--team-height) * 1.2);
+    top: calc(-.6 * (var(--i) + .1) * (var(--team-height) + var(--team-spacing)));
+    transition-property: top, height, width, background;
+    transition-duration: 500ms;
+}
+/*
+.plc-2 .rank {
+    --color: var(--red);
+    color: var(--black);
+}
+.plc-3 .rank {
+    --color: var(--cyan);
+    color: var(--black);
+}
+.plc-4 .rank {
+    --color: var(--orange);
+    color: var(--black);
+}
+*/
+
+.name {
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.rank,
+.total_score,
+.month_score {
+    width: var(--team-height);
+    margin: 20px 0;
+    font-size: 1.2rem;
+    color: var(--white);
+    font-weight: 600;
+}
+
+.total_score,
+.month_score {
+    box-sizing: content-box;
+    padding: 0 2rem;
+}
+
+.rank {
+    --color: var(--bg_light);
+
+    font-size: 1.4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 2% 0 0;
+    height: 100%;
+    font-weight: 800;
+    background-color: var(--color);
+    border-right: 3px solid var(--bg);
+    color: var(--white);
+
+    transition-property: background-color;
+    transition-duration: 500ms;
+}
+
+.plc-1 .rank {
+    box-sizing: content-box;
+    padding-left: 3.5%;
+}
+
+.lb_info_container {
+    position: relative;
+    width: 96%;
+    padding: 0 3.5% 0 0;
+    margin-bottom: 1rem;
+    background-color: transparent;
+}
+
+.lb_info_container .rank {
+    box-sizing: content-box;
+    padding-left: 3.5%;
+    border: none;
+    background-color: transparent;
+}
+
+.lb_info_container .rank,
+.lb_info_container .total_score,
+.lb_info_container .month_score,
+.lb_info_container .name {
+    font-size: .9rem;
+}
+
+.sort_btn {
+    position: relative;
+}
+
+.sort_btn::after {
+    display: none;
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 0;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 7px solid var(--white);
+}
+
+.sort_btn[data-sort="desc"]::after {
+    display: block;
+}
+
 
 /*----------------------------------------------------Admin Pages----------------------------------------------------*/
 

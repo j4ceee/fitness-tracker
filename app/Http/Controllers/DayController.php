@@ -76,7 +76,9 @@ class DayController extends Controller
     {
         $user = Auth::user();
 
-        return view('days.create', compact('user'));
+        $date = now()->format('Y-m-d');
+
+        return view('days.create', compact('user', 'date'));
     }
 
     /**
@@ -134,7 +136,10 @@ class DayController extends Controller
                 $request->water,
                 $request->meals_warm,
                 $request->meals_cold,
-                $request->is_cheat_day ?? false
+                $request->is_cheat_day ?? false,
+                $request->took_alcohol ?? false,
+                $request->took_fast_food ?? false,
+                $request->took_sweets ?? false
             );
 
             try {
@@ -150,6 +155,9 @@ class DayController extends Controller
                     'meals_warm' => $request->meals_warm,
                     'meals_cold' => $request->meals_cold,
                     'is_cheat_day' => $request->is_cheat_day ?? false,
+                    'took_alcohol' => $request->took_alcohol ?? false,
+                    'took_fast_food' => $request->took_fast_food ?? false,
+                    'took_sweets' => $request->took_sweets ?? false,
                     'points' => $points,
                 ]);
             } catch (\Exception $e) {
@@ -162,9 +170,17 @@ class DayController extends Controller
             $userMonthly->cheat_days_used += ($request->is_cheat_day ? 1 : 0);
             $userMonthly->save();
 
-            return redirect()->route('days.my')
-                ->with('status', 'day-updated')
-                ->with('success', 'Der Tag ' .  date('d.m.Y', strtotime($date)) . ' wurde erfolgreich angelegt.');
+            $this->recalculateTotalPoints($request->user());
+
+            // check if day is today
+            if ($day->date->isToday()) {
+                return redirect()->route('dashboard')
+                    ->with('status', 'day-updated');
+            } else {
+                return redirect()->route('days.my')
+                    ->with('status', 'day-updated')
+                    ->with('success', 'Der Tag ' .  date('d.m.Y', strtotime($date)) . ' wurde erfolgreich angelegt.');
+            }
         });
     }
 
@@ -197,7 +213,7 @@ class DayController extends Controller
      * Update the specified resource in storage.
      * @throws Throwable
      */
-    public function update(Request $request, string $id): RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         return DB::transaction(function () use ($request, $id) {
             // get the day
@@ -250,7 +266,10 @@ class DayController extends Controller
                 $request->water,
                 $request->meals_warm,
                 $request->meals_cold,
-                $request->is_cheat_day ?? false
+                $request->is_cheat_day ?? false,
+                $request->took_alcohol ?? false,
+                $request->took_fast_food ?? false,
+                $request->took_sweets ?? false
             );
 
             $pointsDifference = $points - $oldPoints;
@@ -267,6 +286,9 @@ class DayController extends Controller
             $day->meals_warm = $request->meals_warm;
             $day->meals_cold = $request->meals_cold;
             $day->is_cheat_day = $request->is_cheat_day ?? false;
+            $day->took_alcohol = $request->took_alcohol ?? false;
+            $day->took_fast_food = $request->took_fast_food ?? false;
+            $day->took_sweets = $request->took_sweets ?? false;
             $day->points = $points;
             $day->save();
 
@@ -275,9 +297,11 @@ class DayController extends Controller
             $userMonthly->cheat_days_used = $newCheatDays;
             $userMonthly->save();
 
+            $this->recalculateTotalPoints($request->user());
+
             // check if day is today
             if ($day->date->isToday()) {
-                return redirect()->route('days.my')
+                return redirect()->route('dashboard')
                     ->with('status', 'day-updated');
             } else {
                 return redirect()->route('days.edit', $day->id)
@@ -291,10 +315,30 @@ class DayController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = Auth::user();
+
+        try {
+            $day = $user->days()->findOrFail($id);
+        } catch (ModelNotFoundException) {
+            return redirect()->route('days.my')->with('error', 'Der Tag konnte nicht gefunden werden.');
+        }
+
+        $userMonthly = $user->user_monthlies()->where('month', date('Y-m-01', strtotime($day->date)))->first();
+
+        $userMonthly->points_month -= $day->points;
+        $userMonthly->cheat_days_used -= ($day->is_cheat_day ? 1 : 0);
+        $userMonthly->save();
+
+        $date = $day->date;
+
+        $day->delete();
+
+        $this->recalculateTotalPoints($user);
+
+        return redirect()->route('days.my')->with('success', 'Der Tag ' . date('d.m.Y', strtotime($date)) . ' wurde gelöscht.');
     }
 
-    public function calculatePoints(float $caloriePercent, int $trainingDuration, float $steps, float $water, int $warmMeals, int $coldMeals, bool $cheatDay): int
+    public function calculatePoints(float $caloriePercent, int $trainingDuration, float $steps, float $water, int $warmMeals, int $coldMeals, bool $cheatDay, bool $tookAlcohol, bool $tookFastFood, bool $tookSweets): int
     {
         $points = 0;
 
@@ -339,6 +383,23 @@ class DayController extends Controller
         // calculate points for cold meals (1 point per meal)
         $points += $coldMeals * Config::get('constants.points.cold_meal_points');
 
+        if (!$cheatDay) {
+            // calculate points for alcohol
+            if ($tookAlcohol) {
+                $points += Config::get('constants.points.alcohol_points');
+            }
+
+            // calculate points for fast food
+            if ($tookFastFood) {
+                $points += Config::get('constants.points.fast_food_points');
+            }
+
+            // calculate points for sweets
+            if ($tookSweets) {
+                $points += Config::get('constants.points.sweets_points');
+            }
+        }
+
         return $points;
     }
 
@@ -353,7 +414,72 @@ class DayController extends Controller
             'training_duration' => ['required', 'numeric', 'integer', Rule::in(Config::get('constants.training_duration.options'))],
             'steps' => ['required', 'numeric', Rule::in(Config::get('constants.steps.options'))],
             'is_cheat_day' => [Rule::in([0, 1])],
+            'took_alcohol' => [Rule::in([0, 1])],
+            'took_fast_food' => [Rule::in([0, 1])],
+            'took_sweets' => [Rule::in([0, 1])],
             'weight' => ['nullable', 'numeric', 'regex:/^\d+(\.\d{1})?$/', 'min:' . Config::get('constants.weight.min'), 'max:' . Config::get('constants.weight.max')],
         ]);
+    }
+
+    public function recalculateAllPoints(User $user): void
+    {
+        $userMonthlies = $user->user_monthlies()->get();
+
+        foreach ($userMonthlies as $userMonthly) {
+            $this->recalculateDaysMonthPoints($userMonthly);
+            $this->recalculateMonthlyPoints($userMonthly);
+        }
+
+        $this->recalculateTotalPoints($user);
+    }
+
+    public function recalculateTotalPoints(User $user): void {
+        $userMonthlies = $user->user_monthlies()->get();
+        $user->user_stats->points_total = $userMonthlies->sum('points_month');
+        $user->user_stats->save();
+    }
+
+    public function recalculateMonthlyPoints(UserMonthly $userMonthly): void
+    {
+        $points = 0;
+
+        $days = $userMonthly->user->days()
+            ->where('date', '>=', $userMonthly->month)
+            ->where('date', '<', $userMonthly->month->addMonth())
+            ->get();
+
+        foreach ($days as $day) {
+            $points += $day->points;
+        }
+
+        $userMonthly->points_month = $points;
+        $userMonthly->save();
+    }
+
+    public function recalculateDaysMonthPoints(UserMonthly $userMonthly): void {
+        $days = $userMonthly->user->days()
+            ->where('date', '>=', $userMonthly->month)
+            ->where('date', '<', $userMonthly->month->addMonth())
+            ->get();
+
+        foreach ($days as $day) {
+            $day_points = $this->calculatePoints(
+                $day->percentage_of_goal,
+                $day->training_duration,
+                $day->steps,
+                $day->water,
+                $day->meals_warm,
+                $day->meals_cold,
+                $day->is_cheat_day,
+                $day->took_alcohol,
+                $day->took_fast_food,
+                $day->took_sweets
+            );
+
+            if ($day_points != $day->points) {
+                $day->points = $day_points;
+                $day->save();
+            }
+        }
     }
 }

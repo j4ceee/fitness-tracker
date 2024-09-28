@@ -32,7 +32,10 @@ return new class extends Migration
             $table->float('steps'); // daily walking in km, 1 point for each 10km
             $table->integer('meals_warm'); // 2pts for each meal
             $table->integer('meals_cold'); // 1pt for each meal
-            $table->boolean('is_cheat_day'); // if true, no negative points are given
+            $table->boolean('is_cheat_day')->default(false); // if true, no negative points are given
+            $table->boolean('took_alcohol')->default(false); // if true, -5 points
+            $table->boolean('took_fast_food')->default(false); // if true, -2 points
+            $table->boolean('took_sweets')->default(false); // if true, -1 point
             $table->integer('points'); // total points for the day
             $table->timestamps();
         });

@@ -6,20 +6,16 @@
         @method('PUT')
 @endif
     @csrf
-    @if (request()->routeIs('days.my') || request()->routeIs('dashboard'))
-        <h2 class="text-lg font-semibold text-gray-300">Heute, <time datetime="@php echo date('Y-m-d'); @endphp" class="text-xl text-white">@php echo date('d.m.Y'); @endphp</time></h2>
-    @endif
-
-    @unless($day->id ?? null || request()->routeIs('days.my') || request()->routeIs('dashboard'))
-        {{-- when creating a new day & not on the dashboard or my days page --}}
+    @unless($day->id ?? null || request()->routeIs('dashboard'))
+        {{-- when creating a new day & not on the dashboard page --}}
         <fieldset class="day_form_date">
             <x-input-label for="date" :value="__('Datum')" :required="true"/>
             <x-date-input id="date" name="date" class="flex-grow mt-1"
-                          :value="old('date', date('Y-m-d'))"
+                          :value="old('date', $date)"
                           required/>
         </fieldset>
-    @elseif (request()->routeIs('days.my') || request()->routeIs('dashboard'))
-        <input type="hidden" id="date" name="date" value="{{ date('Y-m-d') }}">
+    @elseif (request()->routeIs('dashboard'))
+        <input type="hidden" id="date" name="date" value="{{ $date }}">
     @endunless
 
     <div class="day_form_header">
@@ -57,6 +53,35 @@
     </div>
 
     <div class="day_form_content">
+        <fieldset class="day_form_cat day_form_activ">
+            <legend class="day_form_cat_h">{{__('Training')}}</legend>
+
+            {{-- Training Minutes --}}
+            <div>
+                <x-input-label for="training_duration" :value="__('Trainingsdauer')" :required="true"/>
+                <div class="w-6/12 flex gap-2 items-center">
+                    <x-number-input id="training_duration" name="training_duration" min="0" max="210" step="15"
+                                    class="flex-grow mt-1"
+                                    :value="old('training_duration', $day->training_duration ?? 0)"
+                                    required/>
+                    <p class="mt-1 w-1/12">min</p>
+                </div>
+                <x-input-error class="mt-2" :messages="$errors->get('training_duration')"/>
+            </div>
+
+            {{-- Steps (in km) --}}
+            <div>
+                <x-input-label for="steps" :value="__('Kilometer')" :required="true"/>
+                <div class="w-6/12 flex gap-2 items-center">
+                    <x-number-input id="steps" name="steps" min="0" max="40" step="10" class="flex-grow mt-1"
+                                    :value="old('steps', $day->steps ?? 0)"
+                                    required/>
+                    <p class="mt-1 w-1/12">{{__('km')}}</p>
+                </div>
+                <x-input-error class="mt-2" :messages="$errors->get('steps')"/>
+            </div>
+        </fieldset>
+
         <fieldset class="day_form_cat day_form_nutrition">
             <legend class="day_form_cat_h">{{__('Ernährung')}}</legend>
             {{-- Day Calorie Goal --}}
@@ -96,6 +121,25 @@
             </div>
         </fieldset>
 
+        <fieldset class="day_form_cat day_form_water">
+            <legend class="day_form_cat_h">{{__('Wasser-Tracker')}}</legend>
+            {{-- Water --}}
+            <x-input-label for="water" :value="__('Wasser')" :required="true"/>
+
+            <input type="hidden" id="water" name="water" min="0" max="3" step=".5" class="flex-grow mt-1"
+                   value="{{ old('water', $day->water ?? '0') }}"
+                   required/>
+
+            <div class="w-full flex items-center gap-3 justify-center">
+                <button class="water_btn" id="water_btn_minus" type="button"><span>-</span></button>
+                <p class="text-xl font-bold"><span
+                        id="water_count">{{ number_format(old('water', $day->water ?? '0'), 2) }}</span> {{__('L')}}</p>
+                <button class="water_btn" id="water_btn_plus" type="button"><span>+</span></button>
+            </div>
+
+            <x-input-error class="mt-2" :messages="$errors->get('water')"/>
+        </fieldset>
+
         <fieldset class="day_form_cat day_form_meals">
             <legend class="day_form_cat_h">{{__('Meal-Tracker')}}</legend>
             {{-- Meals Warm --}}
@@ -123,52 +167,40 @@
             </div>
         </fieldset>
 
-        <fieldset class="day_form_cat day_form_water">
-            <legend class="day_form_cat_h">{{__('Wasser-Tracker')}}</legend>
-            {{-- Water --}}
-            <x-input-label for="water" :value="__('Wasser')" :required="true"/>
+        <fieldset class="day_form_cat day_form_neg">
+            <legend class="day_form_cat_h">{{__('Diät')}}</legend>
 
-            <input type="hidden" id="water" name="water" min="0" max="3" step=".5" class="flex-grow mt-1"
-                   value="{{ old('water', $day->water ?? '0') }}"
-                   required/>
-
-            <div class="w-full flex items-center gap-3 justify-center">
-                <button class="water_btn" id="water_btn_minus" type="button"><span>-</span></button>
-                <p class="text-xl font-bold"><span
-                        id="water_count">{{ number_format(old('water', $day->water ?? '0'), 2) }}</span> {{__('L')}}</p>
-                <button class="water_btn" id="water_btn_plus" type="button"><span>+</span></button>
-            </div>
-
-            <x-input-error class="mt-2" :messages="$errors->get('water')"/>
-        </fieldset>
-
-        <fieldset class="day_form_cat day_form_activ">
-            <legend class="day_form_cat_h">{{__('Aktivitäten')}}</legend>
-
-            {{-- Training Minutes --}}
+            {{-- Alcohol --}}
             <div>
-                <x-input-label for="training_duration" :value="__('Trainingsdauer')" :required="true"/>
                 <div class="w-6/12 flex gap-2 items-center">
-                    <x-number-input id="training_duration" name="training_duration" min="0" max="210" step="15"
-                                    class="flex-grow mt-1"
-                                    :value="old('training_duration', $day->training_duration ?? 0)"
-                                    required/>
-                    <p class="mt-1 w-1/12">min</p>
+                    <x-input-label for="took_alcohol" :value="__('Alkohol')"/>
+                    <input type="hidden" name="took_alcohol" value="0">
+                    <input type="checkbox" id="took_alcohol" name="took_alcohol" class="mt-1" value="1" {{ old('took_alcohol', $day->took_alcohol ?? false) ? 'checked' : '' }}>
                 </div>
-                <x-input-error class="mt-2" :messages="$errors->get('training_duration')"/>
+                <x-input-error class="mt-2" :messages="$errors->get('took_alcohol')"/>
             </div>
 
-            {{-- Steps (in km) --}}
+            {{-- Fast food --}}
             <div>
-                <x-input-label for="steps" :value="__('Kilometer')" :required="true"/>
                 <div class="w-6/12 flex gap-2 items-center">
-                    <x-number-input id="steps" name="steps" min="0" max="40" step=".5" class="flex-grow mt-1"
-                                    :value="old('steps', $day->steps ?? 0)"
-                                    required/>
-                    <p class="mt-1 w-1/12">{{__('km')}}</p>
+                    <x-input-label for="took_fast_food" :value="__('Fast Food')"/>
+                    <input type="hidden" name="took_fast_food" value="0">
+                    <input type="checkbox" id="took_fast_food" name="took_fast_food" class="mt-1" value="1" {{ old('took_fast_food', $day->took_fast_food ?? false) ? 'checked' : '' }}>
                 </div>
-                <x-input-error class="mt-2" :messages="$errors->get('steps')"/>
+                <x-input-error class="mt-2" :messages="$errors->get('took_fast_food')"/>
             </div>
+
+            {{-- Sweets --}}
+            <div>
+                <div class="w-6/12 flex gap-2 items-center">
+                    <x-input-label for="took_sweets" :value="__('Süßigkeiten')"/>
+                    <input type="hidden" name="took_sweets" value="0">
+                    <input type="checkbox" id="took_sweets" name="took_sweets" class="mt-1" value="1" {{ old('took_sweets', $day->took_sweets ?? false) ? 'checked' : '' }}>
+                </div>
+                <x-input-error class="mt-2" :messages="$errors->get('took_sweets')"/>
+            </div>
+
+
         </fieldset>
 
         <fieldset class="day_form_cat day_form_misc">
@@ -196,9 +228,6 @@
                 <x-input-error class="mt-2" :messages="$errors->get('weight')"/>
             </div>
         </fieldset>
-
-        <div class="day_form_cat day_form_placeholder">
-        </div>
     </div>
     <div class="flex items-center justify-end gap-4">
         @if (session('status'))

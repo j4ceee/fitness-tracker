@@ -14,6 +14,30 @@ use Illuminate\Validation\Rules;
 
 class ProfileController extends Controller
 {
+    public function dashboard(int $dayInt = 0): View
+    {
+        $user = Auth::user();
+
+        // when dayInt is 0, show today's dashboard
+        if ($dayInt === 0) {
+            $date = now()->format('Y-m-d');
+        }
+        else {
+            $date = now()->subDays($dayInt)->format('Y-m-d');
+        }
+
+        // get today
+        $day = $user->days()
+            ->where('date', $date)
+            ->first();
+
+        $userMonthly = $user->user_monthlies()
+            ->where('month', now()->format('Y-m-01'))
+            ->first();
+
+        return view('dashboard', compact('day', 'date', 'dayInt', 'userMonthly'));
+    }
+
     /**
      * Display the user's profile form.
      */
