@@ -14,24 +14,38 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            <div class="flex justify-end mb-6">
-                <x-blue-button-link @class(["text_icon_button"]) href="{{ route('days.create') }}">
-                    <p>{{ __('Tag anlegen') }}</p><img src="{{ route('image.show', 'noun-plus-6413839.svg') }}" alt="">
-                </x-blue-button-link>
-            </div>
+            @if (request()->routeIs('days.my') || Auth::user() == $user)
+                <div class="flex justify-end mb-6">
+                    <x-blue-button-link @class(["text_icon_button"]) href="{{ route('days.create') }}">
+                        <p>{{ __('Tag anlegen') }}</p><img src="{{ route('image.show', 'noun-plus-6413839.svg') }}" alt="">
+                    </x-blue-button-link>
+                </div>
+            @endif
 
             <div class="mt-12">
                 <div class="flex justify-center gap-4 mb-8">
+                    @if (request()->routeIs('days.my') || Auth::user() == $user)
                     <x-blue-button-link :href="route('days.my', ['page' => $page + 1])" title="{{ __('Vorheriger Monat') }}">
                         <span class="month_control_icon" aria-hidden="true"><</span>
                     </x-blue-button-link>
+                    @else
+                    <x-blue-button-link :href="route('days.index', ['userId' => $user->id, 'page' => $page + 1])" title="{{ __('Vorheriger Monat') }}">
+                        <span class="month_control_icon" aria-hidden="true"><</span>
+                    </x-blue-button-link>
+                    @endif
                     <h2 class="text-2xl font-bold">
                         {{ now()->subMonths($page)->translatedFormat('F Y') }}
                     </h2>
                     @if ($page > 0)
-                        <x-blue-button-link :href="route('days.my', ['page' => $page - 1])" title="{{ __('Nächster Monat') }}">
-                            <span class="month_control_icon" aria-hidden="true">></span>
-                        </x-blue-button-link>
+                        @if (request()->routeIs('days.my') || Auth::user() == $user)
+                            <x-blue-button-link :href="route('days.my', ['page' => $page - 1])" title="{{ __('Nächster Monat') }}">
+                                <span class="month_control_icon" aria-hidden="true">></span>
+                            </x-blue-button-link>
+                        @else
+                            <x-blue-button-link :href="route('days.index', ['userId' => $user->id, 'page' => $page - 1])" title="{{ __('Nächster Monat') }}">
+                                <span class="month_control_icon" aria-hidden="true">></span>
+                            </x-blue-button-link>
+                        @endif
                     @endif
                 </div>
 
@@ -45,7 +59,7 @@
                             @endif
                         </p>
                         <p>{{ __('Verwendete Cheat Days: ') }}
-                            <strong class="text-orange-400 font-bold">{{ $userMonthly->cheat_days_used ?? 0 }}</strong>
+                            <strong class="text-blue-300 font-bold">{{ $userMonthly->cheat_days_used ?? 0 }}</strong>
                             / {{ Config::get('constants.max_cheat_days') }}
                         </p>
                     </div>
@@ -55,7 +69,7 @@
                     @foreach ($days as $day)
                         <div class="day">
                             @if ($day->is_cheat_day)
-                                <abbr class="cheat_day_icon" title="Cheat Day" aria-label="Cheat Day">+</abbr>
+                                <img class="cheat_day_icon" src="{{ route('image.show', 'cheat-day.svg') }}" title="Cheat Day" alt="Cheat Day">
                             @endif
 
                             <h3>{{ $day->date->translatedFormat('l, j. M Y') }}</h3>

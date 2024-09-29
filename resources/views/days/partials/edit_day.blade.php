@@ -20,7 +20,7 @@
 
     <div class="day_form_header">
         {{-- Progress Circle, https://codepen.io/yichinweng/pen/WNvXevO --}}
-        <div class="progress_bar_cont" id="progress_bar_cont" data-progress="{{ $day->percentage_of_goal ?? 0 }}">
+        <div class="progress_bar_cont" id="progress_bar_cont" data-progress="{{ $day->percentage_of_goal ?? 0 }}" data-mode="edit">
             <div class="cal_stats">
                 <p id="cal_progress_text" class="text-lg font-bold m-0 p-0 leading-5">{{ $day->calories ?? 0 }}</p>
                 <p class="text-gray-400 font-bold m-0 p-0 leading-5">
@@ -172,35 +172,27 @@
 
             {{-- Alcohol --}}
             <div>
-                <div class="w-6/12 flex gap-2 items-center">
-                    <x-input-label for="took_alcohol" :value="__('Alkohol')"/>
-                    <input type="hidden" name="took_alcohol" value="0">
-                    <input type="checkbox" id="took_alcohol" name="took_alcohol" class="mt-1" value="1" {{ old('took_alcohol', $day->took_alcohol ?? false) ? 'checked' : '' }}>
-                </div>
+                <x-image-toggle name="took_alcohol" svgName="noun-alcohol-6779240" isChecked="{{ (bool)old('took_alcohol', $day->took_alcohol ?? false) }}">
+                    {{__('Alkohol')}}
+                </x-image-toggle>
                 <x-input-error class="mt-2" :messages="$errors->get('took_alcohol')"/>
             </div>
 
             {{-- Fast food --}}
             <div>
-                <div class="w-6/12 flex gap-2 items-center">
-                    <x-input-label for="took_fast_food" :value="__('Fast Food')"/>
-                    <input type="hidden" name="took_fast_food" value="0">
-                    <input type="checkbox" id="took_fast_food" name="took_fast_food" class="mt-1" value="1" {{ old('took_fast_food', $day->took_fast_food ?? false) ? 'checked' : '' }}>
-                </div>
+                <x-image-toggle name="took_fast_food" svgName="noun-burger-6779289" isChecked="{{ (bool)old('took_fast_food', $day->took_fast_food ?? false) }}">
+                    {{__('Fast Food')}}
+                </x-image-toggle>
                 <x-input-error class="mt-2" :messages="$errors->get('took_fast_food')"/>
             </div>
 
             {{-- Sweets --}}
             <div>
-                <div class="w-6/12 flex gap-2 items-center">
-                    <x-input-label for="took_sweets" :value="__('Süßigkeiten')"/>
-                    <input type="hidden" name="took_sweets" value="0">
-                    <input type="checkbox" id="took_sweets" name="took_sweets" class="mt-1" value="1" {{ old('took_sweets', $day->took_sweets ?? false) ? 'checked' : '' }}>
-                </div>
+                <x-image-toggle name="took_sweets" svgName="noun-lollipop-6779258" isChecked="{{ (bool)old('took_sweets', $day->took_sweets ?? false) }}">
+                    {{__('Süßigkeiten')}}
+                </x-image-toggle>
                 <x-input-error class="mt-2" :messages="$errors->get('took_sweets')"/>
             </div>
-
-
         </fieldset>
 
         <fieldset class="day_form_cat day_form_misc">
@@ -208,11 +200,9 @@
 
             {{-- Is this day a cheat day? --}}
             <div>
-                <div class="w-6/12 flex gap-2 items-center">
-                    <x-input-label for="is_cheat_day" :value="__('Cheat Day')"/>
-                    <input type="hidden" name="is_cheat_day" value="0">
-                    <input type="checkbox" id="is_cheat_day" name="is_cheat_day" class="mt-1" value="1" {{ old('is_cheat_day', $day->is_cheat_day ?? false) ? 'checked' : '' }}>
-                </div>
+                <x-image-toggle class="mt-0.5" name="is_cheat_day" svgName="cheat-day-white" isChecked="{{ (bool)old('is_cheat_day', $day->is_cheat_day ?? false) }}">
+                    {{__('Cheat Day')}}
+                </x-image-toggle>
                 <x-input-error class="mt-2" :messages="$errors->get('is_cheat_day')"/>
             </div>
 

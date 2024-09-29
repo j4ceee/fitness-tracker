@@ -11,14 +11,15 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 lb_vars">
+            <input type="hidden" id="leaderboard_array" value="{{ $lb_array }}">
 
             <template id="user_temp">
                 <div class="team">
                     <p class="rank"></p>
                     <div class="team_info">
-                        <span class="name">Team 1</span>
-                        <span class="total_score">0</span>
-                        <span class="month_score">0</span>
+                        <p class="name">Team 1</p>
+                        <p class="team_info_p team_info_total"><span class="point_label">Gesamt Punkte:</span> <span class="total_score">0</span></p>
+                        <p class="team_info_p team_info_month"><span class="point_label">Monatl. Punkte:</span> <span class="month_score">0</span></p>
                     </div>
                 </div>
             </template>
@@ -30,7 +31,7 @@
                 <button id="sort_month" class="month_score sort_btn">Monatl. Punkte</button>
             </div>
 
-            <div class="leaderboard_container">
+            <div class="leaderboard_container" data-sort="total">
             </div>
 
         </div>

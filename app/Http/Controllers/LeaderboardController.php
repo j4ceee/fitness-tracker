@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -12,7 +13,27 @@ class LeaderboardController extends Controller
      */
     public function index(): View
     {
-        return view('leaderboard');
+        $lb_array = [];
+
+        $users = User::all()->sortBy('name');
+
+        foreach ($users as $user) {
+            $user_stats = $user->user_stats;
+
+            // get current user_monthlies
+            $user_monthlies = $user->user_monthlies()->where('month', date('Y-m-01'))->first();
+
+            $lb_array[] = [
+                'rank' => "0",
+                'name' => $user->name,
+                'total_score' => $user_stats->points_total,
+                'month_score' => $user_monthlies ? $user_monthlies->points_month : "0",
+            ];
+        }
+
+        $lb_array = json_encode($lb_array);
+
+        return view('leaderboard', compact('lb_array'));
     }
 
     /**

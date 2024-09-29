@@ -2,12 +2,12 @@ window.onload = function () {
 
     /* code from https://codepen.io/Johnny-Dragovic/pen/QWXOgop */
 
-    let data = [
-        {rank: 0, name: "dog", total_score: 10, month_score: 20},
-        {rank: 0, name: "horse", total_score: -3, month_score: 5},
-        {rank: 0, name: "dove", total_score: 50, month_score: 8},
-        {rank: 0, name: "cat", total_score: 0, month_score: 0},
-    ];
+    let data;
+
+    let lb_data = document.getElementById("leaderboard_array");
+    if (lb_data) {
+        data = JSON.parse(lb_data.value);
+    }
 
     let container = document.querySelector(".leaderboard_container");
     let user_temp = document.getElementById("user_temp"); // template for each user
@@ -76,6 +76,7 @@ window.onload = function () {
             if (mode === "total") {
                 score = element.querySelector(".total_score").innerHTML;
 
+                container.setAttribute("data-sort", "total");
                 // add data-sort attribute to the element
                 total_button.setAttribute("data-sort", "desc");
                 month_button.removeAttribute("data-sort");
@@ -83,6 +84,7 @@ window.onload = function () {
             else {
                 score = element.querySelector(".month_score").innerHTML;
 
+                container.setAttribute("data-sort", "month");
                 total_button.removeAttribute("data-sort");
                 month_button.setAttribute("data-sort", "desc");
             }

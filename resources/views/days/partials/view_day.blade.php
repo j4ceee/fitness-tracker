@@ -4,7 +4,7 @@
     @endif
     <div class="day_form_header">
         {{-- Progress Circle, https://codepen.io/yichinweng/pen/WNvXevO --}}
-        <div class="progress_bar_cont" id="progress_bar_cont" data-progress="{{ $day->percentage_of_goal ?? 0 }}">
+        <div class="progress_bar_cont" id="progress_bar_cont" data-progress="{{ $day->percentage_of_goal ?? 0 }}" data-mode="view">
             <div class="cal_stats">
                 <p id="cal_progress_text" class="text-lg font-bold m-0 p-0 leading-5">{{ $day->calories ?? 0 }}</p>
                 <p class="text-gray-400 font-bold m-0 p-0 leading-5">
@@ -37,6 +37,28 @@
     </div>
 
     <div class="day_form_content">
+        <div class="day_form_cat day_form_activ">
+            <p class="day_form_cat_h">{{__('Aktivitäten')}}</p>
+
+            {{-- Training Minutes --}}
+            <div>
+                <p>{{ __('Trainingsdauer') }}</p>
+                <div class="w-6/12 flex gap-2 items-center">
+                    <p class="day_form_show_input">{{ $day->training_duration ?? 0 }}</p>
+                    <p class="mt-1 w-1/12">min</p>
+                </div>
+            </div>
+
+            {{-- Steps (in km) --}}
+            <div>
+                <p>{{ __('Kilometer') }}</p>
+                <div class="w-6/12 flex gap-2 items-center">
+                    <p class="day_form_show_input">{{ $day->steps ?? 0 }}</p>
+                    <p class="mt-1 w-1/12">{{__('km')}}</p>
+                </div>
+            </div>
+        </div>
+
         <div class="day_form_cat day_form_nutrition">
             <p class="day_form_cat_h">{{__('Ernährung')}}</p>
             {{-- Day Calorie Goal --}}
@@ -55,6 +77,18 @@
                     <p class="day_form_show_input">{{ $day->calories ?? 0 }}</p>
                     <p class="mt-1 w-1/12">kcal</p>
                 </div>
+            </div>
+        </div>
+
+        <div class="day_form_cat day_form_water">
+            <p class="day_form_cat_h">{{__('Wasser-Tracker')}}</p>
+            {{-- Water --}}
+            <p>{{ __('Wasser') }}</p>
+
+            <div class="w-full flex items-center gap-3 justify-center">
+                <p class="text-xl font-bold">
+                    <span id="water_count">{{ number_format($day->water ?? '0', 2) }}</span> {{__('L')}}
+                </p>
             </div>
         </div>
 
@@ -79,37 +113,28 @@
             </div>
         </div>
 
-        <div class="day_form_cat day_form_water">
-            <p class="day_form_cat_h">{{__('Wasser-Tracker')}}</p>
-            {{-- Water --}}
-            <p>{{ __('Wasser') }}</p>
+        <div class="day_form_cat day_form_neg">
+            <p class="day_form_cat_h">{{__('Diät')}}</p>
 
-            <div class="w-full flex items-center gap-3 justify-center">
-                <p class="text-xl font-bold">
-                    <span id="water_count">{{ number_format($day->water ?? '0', 2) }}</span> {{__('L')}}
-                </p>
-            </div>
-        </div>
-
-        <div class="day_form_cat day_form_activ">
-            <p class="day_form_cat_h">{{__('Aktivitäten')}}</p>
-
-            {{-- Training Minutes --}}
+            {{-- Alcohol --}}
             <div>
-                <p>{{ __('Trainingsdauer') }}</p>
-                <div class="w-6/12 flex gap-2 items-center">
-                    <p class="day_form_show_input">{{ $day->training_duration ?? 0 }}</p>
-                    <p class="mt-1 w-1/12">min</p>
-                </div>
+                <x-image-toggle name="took_alcohol" svgName="noun-alcohol-6779240" isChecked="{{ $day->took_alcohol }}" disabled>
+                    {{__('Alkohol')}}
+                </x-image-toggle>
             </div>
 
-            {{-- Steps (in km) --}}
+            {{-- Fast food --}}
             <div>
-                <p>{{ __('Kilometer') }}</p>
-                <div class="w-6/12 flex gap-2 items-center">
-                    <p class="day_form_show_input">{{ $day->steps ?? 0 }}</p>
-                    <p class="mt-1 w-1/12">{{__('km')}}</p>
-                </div>
+                <x-image-toggle name="took_fast_food" svgName="noun-burger-6779289" isChecked="{{ $day->took_fast_food }}" disabled>
+                    {{__('Fast Food')}}
+                </x-image-toggle>
+            </div>
+
+            {{-- Sweets --}}
+            <div>
+                <x-image-toggle name="took_sweets" svgName="noun-lollipop-6779258" isChecked="{{ $day->took_sweets }}" disabled>
+                    {{__('Süßigkeiten')}}
+                </x-image-toggle>
             </div>
         </div>
 
@@ -118,10 +143,9 @@
 
             {{-- Is this day a cheat day? --}}
             <div>
-                <div class="w-6/12 flex gap-2 items-center">
-                    <p>{{ __('Cheat Day') }}</p>
-                    <input type="checkbox" class="mt-1" {{ ($day->is_cheat_day ?? false) ? 'checked' : '' }} disabled>
-                </div>
+                <x-image-toggle class="mt-0.5" name="is_cheat_day" svgName="cheat-day-white" isChecked="{{ $day->is_cheat_day }}" disabled>
+                    {{__('Cheat Day')}}
+                </x-image-toggle>
             </div>
 
             {{-- Weight --}}
