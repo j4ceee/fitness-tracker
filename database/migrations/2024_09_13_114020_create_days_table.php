@@ -17,7 +17,7 @@ return new class extends Migration
             $table->date('date');
             $table->float('weight')->nullable();
             $table->integer('training_duration'); // in minutes, 2 points per minute
-            $table->integer('day_calorie_goal')->nullable(); // calorie goal for the day (use global user goal if null)
+            $table->integer('day_calorie_goal'); // calorie goal for the day (use global user goal if null)
             $table->decimal('percentage_of_goal', 5, 4); // percentage of the goal reached (0-1)
             $table->integer('calories');
 
@@ -29,10 +29,13 @@ return new class extends Migration
              * <1l -> -1pt
              */
 
-            $table->integer('steps'); // daily walking in km, 1 point for each 10km
+            $table->float('steps'); // daily walking in km, 1 point for each 10km
             $table->integer('meals_warm'); // 2pts for each meal
             $table->integer('meals_cold'); // 1pt for each meal
-            $table->boolean('is_cheat_day'); // if true, no negative points are given
+            $table->boolean('is_cheat_day')->default(false); // if true, no negative points are given
+            $table->boolean('took_alcohol')->default(false); // if true, -5 points
+            $table->boolean('took_fast_food')->default(false); // if true, -2 points
+            $table->boolean('took_sweets')->default(false); // if true, -1 point
             $table->integer('points'); // total points for the day
             $table->timestamps();
         });

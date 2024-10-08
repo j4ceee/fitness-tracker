@@ -1,3 +1,7 @@
+@section('title')
+    {{ __('Admin Tools') }}
+@endsection
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-100 leading-tight">
@@ -12,7 +16,7 @@
 
             <div class="flex justify-end mb-6">
                 <x-blue-button-link @class(["text_icon_button"]) href="{{ route('users.create') }}">
-                    <p>Add User</p><img src="{{ route('image.show', 'noun-plus-6413839.svg') }}" alt="">
+                    <p>User hinzufügen</p><img src="{{ route('image.show', 'noun-plus-6413839.svg') }}" alt="">
                 </x-blue-button-link>
             </div>
 
