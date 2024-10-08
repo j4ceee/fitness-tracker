@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserMonthly;
 use Auth;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -30,7 +31,7 @@ class DayController extends Controller
         $days = $user->days()
             ->where('date', '>=', now()->subMonths($page)->startOfMonth()) // where date is after the start of the month now - page months
             ->where('date', '<=', now()->subMonths($page)->endOfMonth()) // where date is before the end of the month now - page months
-            ->orderBy('date', 'desc')
+            ->orderBy('date', 'asc')
             ->get();
 
         // get today
@@ -93,7 +94,7 @@ class DayController extends Controller
                 'date' => ['required', 'date'],
             ]);
 
-            $date = $request->date;
+            $date = date('Y-m-d', strtotime($request->date));
 
             // check if day already exists for the user
             $day = $request->user()->days()->where('date', $date)->first();
@@ -173,7 +174,8 @@ class DayController extends Controller
             $this->recalculateTotalPoints($request->user());
 
             // check if day is today
-            if ($day->date->isToday()) {
+            $date = new Carbon($date);
+            if ($date->isToday()) {
                 return redirect()->route('dashboard')
                     ->with('status', 'day-updated');
             } else {

@@ -14,6 +14,7 @@ window.onload = function () {
 
     let total_button = document.getElementById("sort_total");
     let month_button = document.getElementById("sort_month");
+    let day_button = document.getElementById("sort_day");
 
     function renderItems() {
         // count the number of items in the data array
@@ -35,95 +36,95 @@ window.onload = function () {
             let month_score = box.querySelector(".month_score");
             month_score.innerHTML = el.month_score;
 
+            let day_score = box.querySelector(".day_score");
+            day_score.innerHTML = el.day_score;
+
             let rank = box.querySelector(".rank");
             rank.innerHTML = i + 1;
+
+            let calendarLink = box.querySelector(".team_calendar_link");
+            calendarLink.href = el.days_index_url;
+            let calendarIcon = box.querySelector(".team_calendar_icon");
+            // set title & alt text for calendar icon
+            calendarIcon.title = "Kalender von " + el.name + " anzeigen";
+            calendarIcon.alt = "Kalender von " + el.name + " anzeigen";
         });
     }
 
-    function sortByTotal() {
+    function sortAndRank(sortBy) {
         data.sort((a, b) => {
-            if (b.total_score === a.total_score) {
+            if (b[sortBy] === a[sortBy]) {
                 return a.name.localeCompare(b.name);
             }
-            return b.total_score - a.total_score;
-        }).forEach((e, i) => {
-            e.rank = i;
+            return b[sortBy] - a[sortBy];
         });
 
-        updateRanks("total");
-    }
+        let displayRank = 1;
+        let prevScore = null;
 
-    function sortByMonth() {
-        data.sort((a, b) => {
-            if (b.month_score === a.month_score) {
-                return a.name.localeCompare(b.name);
+        data.forEach((e, i) => {
+            e.position = i; // Internal position for CSS ordering
+            if (e[sortBy] !== prevScore) {
+                displayRank = i + 1;
             }
-            return b.month_score - a.month_score;
-        }).forEach((e, i) => {
-            e.rank = i;
+            e.displayRank = displayRank;
+            prevScore = e[sortBy];
         });
 
-        updateRanks("month");
+        updateRanks(sortBy);
     }
 
-    function updateRanks(mode = "total") {
+    function updateRanks(mode = "total_score") {
+        container.setAttribute("data-sort", mode);
+        total_button.setAttribute("data-sort", mode === "total_score" ? "desc" : "");
+        month_button.setAttribute("data-sort", mode === "month_score" ? "desc" : "");
+        day_button.setAttribute("data-sort", mode === "day_score" ? "desc" : "");
+
+        let firstPlaces = 0;
+
         let AllTeams = Array.from(document.querySelectorAll(".team"));
         AllTeams.forEach((element) => {
             let elementName = element.querySelector(".name");
             let rank = element.querySelector(".rank");
 
-            let score;
-            if (mode === "total") {
-                score = element.querySelector(".total_score").innerHTML;
+            let score = element.querySelector(`.${mode}`).innerHTML;
 
-                container.setAttribute("data-sort", "total");
-                // add data-sort attribute to the element
-                total_button.setAttribute("data-sort", "desc");
-                month_button.removeAttribute("data-sort");
-            }
-            else {
-                score = element.querySelector(".month_score").innerHTML;
-
-                container.setAttribute("data-sort", "month");
-                total_button.removeAttribute("data-sort");
-                month_button.setAttribute("data-sort", "desc");
-            }
-
-            let newRank = data.find(
-                (team) => team.name === elementName.innerHTML
-            ).rank;
+            let teamData = data.find((team) => team.name === elementName.innerHTML);
+            let displayRank = teamData.displayRank;
+            let position = teamData.position;
 
             element.classList.remove("plc-1", "plc-2", "plc-3", "plc-4");
 
-            if (newRank === 0 && score !== "0") {
-                element.classList.add("plc-1");
-            }
-            else if (newRank === 1 && score !== "0") {
-                element.classList.add("plc-2");
-            }
-            else if (newRank === 2 && score !== "0") {
-                element.classList.add("plc-3");
-            }
-            else if (newRank === 3 && score !== "0") {
-                element.classList.add("plc-4");
+            if (displayRank <= 4 && score !== "0") {
+                element.classList.add(`plc-${displayRank}`);
+
+                if (displayRank === 1) {
+                    firstPlaces++;
+                }
             }
 
-            element.style.setProperty("--i", newRank);
-            rank.innerHTML = newRank + 1;
+            element.style.setProperty("--i", position);
+            rank.innerHTML = displayRank;
         });
+
+        container.style.setProperty("--first-places", firstPlaces);
     }
 
     renderItems();
 
     setTimeout(() => {
-        sortByTotal();
+        sortAndRank("total_score");
     }, 100);
 
     total_button.addEventListener("click", () => {
-        sortByTotal();
+        sortAndRank("total_score");
     });
 
     month_button.addEventListener("click", () => {
-        sortByMonth();
+        sortAndRank("month_score");
+    });
+
+    day_button.addEventListener("click", () => {
+        sortAndRank("day_score");
     });
 }

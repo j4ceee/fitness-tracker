@@ -103,6 +103,7 @@
     border: solid var(--cyan);
     filter: drop-shadow(0 0 1px var(--black));
     border-width: 0 4px 4px 0;
+    /*noinspection CssUnknownProperty*/
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
@@ -502,6 +503,7 @@
     --team-spacing: 1rem;
 }
 
+/*noinspection CssUnresolvedCustomProperty*/
 .leaderboard_container {
     width: 100%;
     height: calc((var(--team-height) + var(--team-spacing))* var(--team-count));
@@ -520,13 +522,13 @@
     box-shadow: 0 3px 5px #0000001f;
     left: 50%;
     transform: translateX(-50%);
-    top: calc((var(--i) + .1) * (var(--team-height) + var(--team-spacing)));
+    /*noinspection CssUnresolvedCustomProperty*/
+    top: calc((var(--i) + .1) * (var(--team-height) + var(--team-spacing)) + (var(--first-places) * var(--team-height) * .2));
     display: flex;
     align-items: center;
     transition-property: top, background-color, width, height, transform;
     transition-duration: 500ms;
-    border-radius: 10px;
-    overflow: hidden;
+    border-radius: .8rem;
     transition-timing-function: cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
@@ -537,23 +539,47 @@
     transition-property: transform;
 }
 
+.team_calendar_link {
+    position: absolute;
+    padding: 0.5rem;
+    background-color: var(--bg);
+    color: var(--white);
+    cursor: pointer;
+
+    border-radius: 100%;
+    right: 0.2rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    outline: 3px solid transparent;
+    transition: .2s;
+}
+
+.team_calendar_link:hover,
+.team_calendar_link:focus-within {
+    background-color: var(--bg_hover);
+    outline: 3px solid var(--white);
+    transition: .2s;
+}
+
 .team_info {
     width: 100%;
     display: flex;
     align-items: center;
 }
 
-.team.plc-1,
 .plc-1 .rank {
     --color: var(--water-blue);
-    color: var(--black);
+    box-sizing: content-box;
+    padding-left: 3.5%;
 }
 
 .team.plc-1 {
+    --color: var(--water-blue);
     width: 97%;
     padding: 0 3.5% 0 0;
     height: calc(var(--team-height) * 1.2);
-    top: calc(-.6 * (var(--i) + .1) * (var(--team-height) + var(--team-spacing)));
+    /*noinspection CssUnresolvedCustomProperty*/
+    top: calc((var(--i) + .1) * (var(--team-height) * 1.2 + var(--team-spacing)));
     transition-property: top, height, width, background-color, transform;
     transition-duration: 500ms;
 }
@@ -617,14 +643,9 @@
     background-color: var(--color);
     border-right: 3px solid var(--bg);
     color: var(--white);
-
+    border-radius: .8rem 0 0 .8rem;
     transition-property: background-color;
     transition-duration: 500ms;
-}
-
-.plc-1 .rank {
-    box-sizing: content-box;
-    padding-left: 3.5%;
 }
 
 .lb_info_container {
@@ -645,6 +666,7 @@
 .lb_info_container .rank,
 .lb_info_container .total_score,
 .lb_info_container .month_score,
+.lb_info_container .day_score,
 .lb_info_container .name {
     font-size: .9rem;
 }
@@ -687,7 +709,7 @@
     display: none;
 }
 
-@media (max-width: 450px) {
+@media (max-width: 600px) {
     .lb_vars {
         --team-height: 3.7rem;
         --team-spacing: 0.8rem;
@@ -698,7 +720,8 @@
     }
 
     .leaderboard_container .team_info_total,
-    .leaderboard_container .team_info_month {
+    .leaderboard_container .team_info_month,
+    .leaderboard_container .team_info_day {
         display: none;
     }
 
@@ -719,21 +742,21 @@
     }
 
     .total_score,
-    .month_score {
+    .month_score,
+    .day_score {
         font-size: 1.1rem;
     }
 
-    .leaderboard_container[data-sort="total"] .team_info_total {
+    .leaderboard_container[data-sort="total_score"] .team_info_total {
         display: inline-block;
     }
 
-    .leaderboard_container[data-sort="month"] .team_info_month {
+    .leaderboard_container[data-sort="month_score"] .team_info_month {
         display: inline-block;
     }
 
-    .lb_info_container {
-        align-items: center;
-        justify-content: center;
+    .leaderboard_container[data-sort="day_score"] .team_info_day {
+        display: inline-block;
     }
 
     .lb_info_container {
@@ -743,10 +766,13 @@
         padding: 0 .3rem;
         gap: 1rem;
         margin-bottom: 3rem;
+        align-items: center;
+        justify-content: center;
     }
 
     .sort_btn {
         padding: 0.2rem 1.5rem;
+        margin: 0;
         border-radius: 5rem;
     }
     .sort_btn:hover,
@@ -770,6 +796,46 @@
 
     .sort_btn[data-sort="desc"]::after {
         display: none;
+    }
+
+    .team_calendar_link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        right: 1%;
+        height: 90%;
+        width: 2.8rem;
+        border-radius: 0 0.8rem 0.8rem 0;
+        background-color: transparent;
+        filter: drop-shadow(0 0 2px var(--black));
+    }
+}
+
+@media (max-width: 380px) {
+    .sort_btn {
+        padding: 0.2rem 1rem;
+    }
+}
+
+@media (max-width: 330px) {
+    .sort_btn {
+        padding: 0.2rem .6rem;
+    }
+}
+
+@media (max-width: 290px) {
+    .lb_info_container {
+        background-color: transparent;
+        height: auto;
+        flex-wrap: wrap;
+        padding: .4rem .3rem;
+        border-radius: 1.7rem;
+        margin-bottom: 1rem;
+    }
+
+    .sort_btn {
+        background-color: var(--bg_light);
+        padding: 0.3rem 1rem;
     }
 }
 

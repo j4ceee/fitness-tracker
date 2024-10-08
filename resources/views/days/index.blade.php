@@ -1,3 +1,7 @@
+@section('title')
+    {{ __('Kalender') }}
+@endsection
+
 <x-app-layout>
     <x-slot name="header">
         <h1 class="font-semibold text-xl text-gray-100 leading-tight">
@@ -52,7 +56,7 @@
                 <div class="mb-16 month_statistics mx-auto">
                     <div class="flex justify-center gap-4 flex-wrap">
                         <p>{{ __('Gesammelte Punkte: ') }}
-                            @if ($userMonthly->points_month ?? null && $userMonthly->points_month >= 1)
+                            @if (($userMonthly->points_month ?? null) && $userMonthly->points_month >= 1)
                                 <strong class="text-green-300 font-bold">+{{ $userMonthly->points_month }}</strong>
                             @else
                                 <strong class="text-red-500 font-bold">{{ $userMonthly->points_month ?? 0 }}</strong>

@@ -1,6 +1,10 @@
 @php use Carbon\Carbon; @endphp
 @vite(['resources/js/day_stats.js'])
 
+@section('title')
+    {{ __('Dashboard') }}
+@endsection
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-100 leading-tight">
@@ -27,7 +31,7 @@
                     </p>
 
                     <p>{{ __('Monatl. Punkte: ') }}
-                        @if ($userMonthly->points_month ?? null && $userMonthly->points_month >= 1)
+                        @if (($userMonthly->points_month ?? null) && $userMonthly->points_month >= 1)
                             <strong class="text-green-300 font-bold">+{{ $userMonthly->points_month }}</strong>
                         @else
                             <strong class="text-red-500 font-bold">{{ $userMonthly->points_month ?? 0 }}</strong>
@@ -35,7 +39,7 @@
                     </p>
 
                     <p>{{ __('Monatl. Cheat Days: ') }}
-                        <strong class="text-orange-400 font-bold">{{ $userMonthly->cheat_days_used ?? 0 }}</strong>
+                        <strong class="text-blue-300 font-bold">{{ $userMonthly->cheat_days_used ?? 0 }}</strong>
                         / {{ Config::get('constants.max_cheat_days') }}
                     </p>
                 </div>

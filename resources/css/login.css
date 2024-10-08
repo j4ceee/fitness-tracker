@@ -1,0 +1,31 @@
+
+.login_form {
+    min-width: 50%;
+    box-sizing: border-box;
+}
+
+.login_inputs {
+    height: 12.5rem;
+    overflow: hidden;
+    transition: height 0.5s;
+}
+
+.login_inputs[data-hidden="true"] {
+    height: 0;
+    transition: height 0.5s;
+}
+
+.login_btn_cont {
+    display: flex;
+    justify-content: center;
+}
+
+.login_layout {
+    width: 100%;
+    transition: width 0.6s;
+}
+
+.login_inputs[data-hidden="true"] ~ .login_btn_cont .login_layout {
+    width: 0;
+    transition: width 0.6s;
+}

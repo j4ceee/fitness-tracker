@@ -23,11 +23,16 @@ class LeaderboardController extends Controller
             // get current user_monthlies
             $user_monthlies = $user->user_monthlies()->where('month', date('Y-m-01'))->first();
 
+            // get today
+            $today = $user->days()->where('date', date('Y-m-d'))->first();
+
             $lb_array[] = [
                 'rank' => "0",
                 'name' => $user->name,
                 'total_score' => $user_stats->points_total,
                 'month_score' => $user_monthlies ? $user_monthlies->points_month : "0",
+                'day_score' => $today ? $today->points : "0",
+                'days_index_url' => route('days.index', ['userId' => $user->id]),
             ];
         }
 

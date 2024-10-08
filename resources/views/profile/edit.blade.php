@@ -1,5 +1,9 @@
 @vite(['resources/js/profile_edit.js'])
 
+@section('title')
+    {{ __('Profil') }}
+@endsection
+
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-100 leading-tight">
