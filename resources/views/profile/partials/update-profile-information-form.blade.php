@@ -70,6 +70,14 @@
             <x-input-error :messages="$errors->get('gender')" class="mt-2" />
         </div>
 
+        {{-- group code --}}
+        <div>
+            <x-input-label for="group_code" :value="__('Gruppencode')"/>
+            <p class="my-1 text-gray-400 text-sm">{{ __('Nur Personen mit dem gleichen Gruppencode werden im Leaderboard angezeigt.') }}</p>
+            <x-text-input id="group_code" name="group_code" type="text" maxlength="5" class="mt-1 block w-6/12" :value="old('group_code', $user->user_stats->group_code)"/>
+            <x-input-error class="mt-2" :messages="$errors->get('group_code')"/>
+        </div>
+
         {{-- calorie goal --}}
         <div>
             <x-input-label for="cal_goal" :value="__('Globales Kalorienziel')" :required="true"/>

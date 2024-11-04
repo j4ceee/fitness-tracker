@@ -15,10 +15,17 @@ class LeaderboardController extends Controller
     {
         $lb_array = [];
 
+        $current_user = auth()->user();
+        $group_code = $current_user->user_stats->group_code;
+
         $users = User::all()->sortBy('name');
 
         foreach ($users as $user) {
             $user_stats = $user->user_stats;
+
+            if ($user_stats->group_code != $group_code) {
+                continue;
+            }
 
             // get current user_monthlies
             $user_monthlies = $user->user_monthlies()->where('month', date('Y-m-01'))->first();

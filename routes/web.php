@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\GroupMiddleware;
 use Illuminate\Support\Facades\Route;
 
 // get the view with the HomeController class
@@ -24,14 +25,6 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // viewing days
-    Route::get('/days/{userId}/{page?}', [DayController::class, 'index'])
-        ->name('days.index')
-        ->where('userId', '[0-9]+')
-        ->where('page', '[0-9]+');
-    // viewing a single day
-    Route::get('/day/{userId}/{date}', [DayController::class, 'indexDay'])
-        ->name('days.day');
     // viewing my days (same as days.index but with the user id automatically set to the logged-in user)
     Route::redirect('/my-fitness/list/0', '/my-fitness/list');
     Route::get('/my-fitness/list/{page?}', [DayController::class, 'indexMy'])
@@ -57,6 +50,18 @@ Route::middleware('auth')->group(function () {
     // viewing the leaderboard
     Route::get('/leaderboard', [LeaderboardController::class, 'index'])
         ->name('leaderboard');
+});
+
+// viewing other users' days
+Route::middleware(['auth', GroupMiddleware::class])->group(function () {
+    // viewing days
+    Route::get('/days/{userId}/{page?}', [DayController::class, 'index'])
+        ->name('days.index')
+        ->where('userId', '[0-9]+')
+        ->where('page', '[0-9]+');
+    // viewing a single day
+    Route::get('/day/{userId}/{date}', [DayController::class, 'indexDay'])
+        ->name('days.day');
 });
 
 // image route

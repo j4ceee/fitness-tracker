@@ -24,6 +24,7 @@ class UserStats extends Model
         'target_weight',
         'step_goal',
         'global_calorie_goal',
+        'group_code',
     ];
 
     public function user(): BelongsTo

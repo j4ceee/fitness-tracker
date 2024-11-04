@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('step_goal')->nullable();
             $table->integer('global_calorie_goal')->nullable();
             $table->integer('points_total')->default(0);
+            $table->string('group_code', 5)->nullable()->default(null);
             $table->timestamps();
         });
     }

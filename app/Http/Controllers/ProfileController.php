@@ -63,6 +63,7 @@ class ProfileController extends Controller
             'target_weight' => ['nullable', 'numeric', 'regex:/^\d+(\.\d{1})?$/', 'min:0', 'max:200'],
             'step_goal' => ['nullable', 'numeric', 'integer', 'min:0', 'max:20000'],
             'cal_goal' => ['required', 'numeric', 'integer', 'min:0', 'max:10000'],
+            'group_code' => 'nullable|string|max:5',
         ]);
 
         $user_stats = $request->user()->user_stats;
@@ -115,6 +116,11 @@ class ProfileController extends Controller
             //$debugLog .= 'cal_goal, ';
         }
 
+        if ($request->group_code !== $user_stats->group_code) {
+            $user_stats->group_code = $request->group_code;
+            $wasChangedStats = true;
+            //$debugLog .= 'group_code, ';
+        }
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
