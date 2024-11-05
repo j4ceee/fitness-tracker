@@ -66,6 +66,10 @@ class ProfileController extends Controller
             'group_code' => 'nullable|string|max:5',
         ]);
 
+        $request->merge([
+            'group_code' => strtolower($request->group_code),
+        ]);
+
         $user_stats = $request->user()->user_stats;
 
         //$debugLog = 'Updated: ';

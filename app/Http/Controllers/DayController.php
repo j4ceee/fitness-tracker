@@ -103,6 +103,14 @@ class DayController extends Controller
                 return redirect()->route('days.my')->with('error', 'Der Tag wurde bereits angelegt.');
             }
 
+            // cast is_cheat_day, took_alcohol, took_fast_food, took_sweets to boolean
+            $request->merge([
+                'is_cheat_day' => $request->has('is_cheat_day'),
+                'took_alcohol' => $request->has('took_alcohol'),
+                'took_fast_food' => $request->has('took_fast_food'),
+                'took_sweets' => $request->has('took_sweets'),
+            ]);
+
             $this->validateDay($request);
 
             $userMonthly = $request->user()->user_monthlies()->where('month', date('Y-m-01', strtotime($date)))->first();
@@ -137,10 +145,10 @@ class DayController extends Controller
                 $request->water,
                 $request->meals_warm,
                 $request->meals_cold,
-                $request->is_cheat_day ?? false,
-                $request->took_alcohol ?? false,
-                $request->took_fast_food ?? false,
-                $request->took_sweets ?? false
+                $request->is_cheat_day,
+                $request->took_alcohol,
+                $request->took_fast_food,
+                $request->took_sweets
             );
 
             try {
@@ -155,10 +163,10 @@ class DayController extends Controller
                     'steps' => $request->steps,
                     'meals_warm' => $request->meals_warm,
                     'meals_cold' => $request->meals_cold,
-                    'is_cheat_day' => $request->is_cheat_day ?? false,
-                    'took_alcohol' => $request->took_alcohol ?? false,
-                    'took_fast_food' => $request->took_fast_food ?? false,
-                    'took_sweets' => $request->took_sweets ?? false,
+                    'is_cheat_day' => $request->is_cheat_day,
+                    'took_alcohol' => $request->took_alcohol,
+                    'took_fast_food' => $request->took_fast_food,
+                    'took_sweets' => $request->took_sweets,
                     'points' => $points,
                 ]);
             } catch (\Exception $e) {
@@ -168,7 +176,7 @@ class DayController extends Controller
 
             // update user_monthlies
             $userMonthly->points_month += $points;
-            $userMonthly->cheat_days_used += ($request->is_cheat_day ? 1 : 0);
+            $userMonthly->cheat_days_used += ($request->is_cheat_day);
             $userMonthly->save();
 
             $this->recalculateTotalPoints($request->user());
@@ -227,6 +235,13 @@ class DayController extends Controller
 
             $userMonthly = $request->user()->user_monthlies()->where('month', date('Y-m-01', strtotime($day->date)))->first();
 
+            $request->merge([
+                'is_cheat_day' => $request->has('is_cheat_day'),
+                'took_alcohol' => $request->has('took_alcohol'),
+                'took_fast_food' => $request->has('took_fast_food'),
+                'took_sweets' => $request->has('took_sweets'),
+            ]);
+
             $this->validateDay($request);
 
             // check if the user has a user_monthlies entry for the current month
@@ -268,10 +283,10 @@ class DayController extends Controller
                 $request->water,
                 $request->meals_warm,
                 $request->meals_cold,
-                $request->is_cheat_day ?? false,
-                $request->took_alcohol ?? false,
-                $request->took_fast_food ?? false,
-                $request->took_sweets ?? false
+                $request->is_cheat_day,
+                $request->took_alcohol,
+                $request->took_fast_food,
+                $request->took_sweets
             );
 
             $pointsDifference = $points - $oldPoints;
@@ -287,10 +302,10 @@ class DayController extends Controller
             $day->steps = $request->steps;
             $day->meals_warm = $request->meals_warm;
             $day->meals_cold = $request->meals_cold;
-            $day->is_cheat_day = $request->is_cheat_day ?? false;
-            $day->took_alcohol = $request->took_alcohol ?? false;
-            $day->took_fast_food = $request->took_fast_food ?? false;
-            $day->took_sweets = $request->took_sweets ?? false;
+            $day->is_cheat_day = $request->is_cheat_day;
+            $day->took_alcohol = $request->took_alcohol;
+            $day->took_fast_food = $request->took_fast_food;
+            $day->took_sweets = $request->took_sweets;
             $day->points = $points;
             $day->save();
 
@@ -376,7 +391,7 @@ class DayController extends Controller
             }
         }
 
-        // calculate points for steps (1 point per 10km)
+        // calculate points for steps (1 point per 3km), round down
         $points += floor($steps / Config::get('constants.points.steps_per_point'));
 
         // calculate points for warm meals (2 points per meal)
@@ -415,10 +430,10 @@ class DayController extends Controller
             'water' => ['required', 'numeric', Rule::in(Config::get('constants.water.options'))],
             'training_duration' => ['required', 'numeric', 'integer', Rule::in(Config::get('constants.training_duration.options'))],
             'steps' => ['required', 'numeric', Rule::in(Config::get('constants.steps.options'))],
-            'is_cheat_day' => [Rule::in([0, 1])],
-            'took_alcohol' => [Rule::in([0, 1])],
-            'took_fast_food' => [Rule::in([0, 1])],
-            'took_sweets' => [Rule::in([0, 1])],
+            'is_cheat_day' => ['required', 'boolean'],
+            'took_alcohol' => ['required', 'boolean'],
+            'took_fast_food' => ['required', 'boolean'],
+            'took_sweets' => ['required', 'boolean'],
             'weight' => ['nullable', 'numeric', 'regex:/^\d+(\.\d{1})?$/', 'min:' . Config::get('constants.weight.min'), 'max:' . Config::get('constants.weight.max')],
         ]);
     }

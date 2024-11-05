@@ -39,6 +39,14 @@
                                         @else
                                             <p class="user_grid_items"><strong class="text-slate-600">&#x2B24; {{__('Benutzer')}}</strong></p>
                                         @endif
+                                        <br>
+
+                                                @if ($user->user_stats->group_code !== null)
+                                                    <p class="user_grid_items"><strong>{{__('Gruppe')}}</strong>:</p>
+                                                        <p class="user_grid_items"><code class="p-1 bg-gray-900 rounded-md">
+                                                            <strong class="text-blue-400">{{ $user->user_stats->group_code }}</strong>
+                                                        </code></p>
+                                                @endif
                                     </div>
                                     <div class="flex h-full items-center gap-3 user_actions">
                                         <x-secondary-button-link @class(["admin-users-action"]) href="{{ route('users.edit', $user->id) }}">

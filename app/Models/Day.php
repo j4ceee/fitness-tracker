@@ -31,11 +31,18 @@ class Day extends Model
         'meals_warm',
         'meals_cold',
         'is_cheat_day',
+        'took_alcohol',
+        'took_fast_food',
+        'took_sweets',
         'points',
     ];
 
     protected $casts = [
         'date' => 'datetime',
+        'is_cheat_day' => 'boolean',
+        'took_alcohol' => 'boolean',
+        'took_fast_food' => 'boolean',
+        'took_sweets' => 'boolean',
     ];
 
     public function user(): BelongsTo

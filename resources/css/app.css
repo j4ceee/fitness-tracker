@@ -268,6 +268,42 @@
     }
 }
 
+.day_form_info {
+    z-index: 2;
+    position: absolute;
+    width: 100%;
+    height: 0;
+    top: 0;
+}
+
+.day_form_info[open] {
+    height: 100%;
+}
+
+.day_form_info[open] .day_form_info_content {
+    font-size: .9rem;
+    width: 100%;
+    height: 100%;
+    padding: .5rem 1rem;
+    border-radius: .7rem;
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+}
+
+.day_form_info_btn {
+    list-style: none;
+    background-color: var(--bg_light);
+    padding: .2rem;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 100%;
+    position: absolute;
+    cursor: pointer;
+    top: -1rem;
+    right: -.8rem;
+}
+
 .day_form_cat {
     padding: 1rem;
     min-width: 10rem;
@@ -279,6 +315,7 @@
     gap: 1rem;
     position: relative;
     align-items: center;
+    font-weight: bold;
 }
 
 .day_form_cat_h {
@@ -293,24 +330,22 @@
 .day_form_meals {
     background-color: var(--cyan);
     color: #404040;
-    font-weight: bold;
 }
 
 .day_form_nutrition label,
 .day_form_meals label {
     color: #404040;
-    font-weight: bold;
 }
 
 .day_form_activ {
     background-color: var(--orange);
     color: var(--white);
-    font-weight: bold;
 }
 
 .day_form_activ label,
 .day_form_water label,
-.day_form_neg label {
+.day_form_neg label,
+.day_form_misc label {
     color: var(--white);
     font-weight: bold;
 }

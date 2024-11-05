@@ -56,6 +56,11 @@
         <fieldset class="day_form_cat day_form_activ">
             <legend class="day_form_cat_h">{{__('Training')}}</legend>
 
+            <x-day-form-details :cat_class="'day_form_activ'" :cat_name="'Training'">
+                <p>{{__('Hier kannst du deine sportlichen Aktivitäten eintragen.')}}</p>
+                <p>{{__('Die Trainingsdauer wird in Minuten angegeben, die Schritte in Kilometern.')}}</p>
+            </x-day-form-details>
+
             {{-- Training Minutes --}}
             <div>
                 <x-input-label for="training_duration" :value="__('Trainingsdauer')" :required="true"/>
@@ -73,7 +78,7 @@
             <div>
                 <x-input-label for="steps" :value="__('Kilometer')" :required="true"/>
                 <div class="w-6/12 flex gap-2 items-center">
-                    <x-number-input id="steps" name="steps" min="0" max="40" step="10" class="flex-grow mt-1"
+                    <x-number-input id="steps" name="steps" min="0" max="40" step="1" class="flex-grow mt-1"
                                     :value="old('steps', $day->steps ?? 0)"
                                     required/>
                     <p class="mt-1 w-1/12">{{__('km')}}</p>
@@ -84,6 +89,24 @@
 
         <fieldset class="day_form_cat day_form_nutrition">
             <legend class="day_form_cat_h">{{__('Ernährung')}}</legend>
+
+            <x-day-form-details :cat_class="'day_form_nutrition'" :cat_name="'Ernährung'">
+                <p>{{__('Hier kannst du deine Kalorien eintragen.')}}</p>
+                <p>{{__('Falls du auf deinem Profil ein globales Kalorienziel festgelegt hast, wird dieses hier automatisch eingetragen.')}}</p>
+            </x-day-form-details>
+
+            {{-- Day Calories --}}
+            <div>
+                <x-input-label for="calories" :value="__('Kalorien')" :required="true"/>
+                <div class="w-6/12 flex gap-2 items-center">
+                    <x-number-input id="calories" name="calories" min="0" max="10000" step="1" class="flex-grow mt-1"
+                                    :value="old('calories', $day->calories ?? 0)"
+                                    required/>
+                    <p class="mt-1 w-1/12">kcal</p>
+                </div>
+                <x-input-error class="mt-2" :messages="$errors->get('calories')"/>
+            </div>
+
             {{-- Day Calorie Goal --}}
             <div>
                 @if ($user->user_stats->global_calorie_goal ?? null)
@@ -106,18 +129,6 @@
                     <p class="mt-1 w-1/12">kcal</p>
                 </div>
                 <x-input-error class="mt-2" :messages="$errors->get('day_calorie_goal')"/>
-            </div>
-
-            {{-- Day Calories --}}
-            <div>
-                <x-input-label for="calories" :value="__('Kalorien')" :required="true"/>
-                <div class="w-6/12 flex gap-2 items-center">
-                    <x-number-input id="calories" name="calories" min="0" max="10000" step="1" class="flex-grow mt-1"
-                                    :value="old('calories', $day->calories ?? 0)"
-                                    required/>
-                    <p class="mt-1 w-1/12">kcal</p>
-                </div>
-                <x-input-error class="mt-2" :messages="$errors->get('calories')"/>
             </div>
         </fieldset>
 
@@ -142,6 +153,12 @@
 
         <fieldset class="day_form_cat day_form_meals">
             <legend class="day_form_cat_h">{{__('Meal-Tracker')}}</legend>
+
+            <x-day-form-details :cat_class="'day_form_meals'" :cat_name="'Meal-Tracker'">
+                <p>{{__('Hier kannst du deine')}} <strong class="underline">{{__('selbstgemachten')}}</strong> {{__('Mahlzeiten eintragen.')}}</p>
+                <p>{{__('Fertiggerichte (z.B. Tiefkühlpizza) zählen nicht dazu.')}}</p>
+            </x-day-form-details>
+
             {{-- Meals Warm --}}
             <div>
                 <x-input-label for="meals_warm" :value="__('Warm')" :required="true"/>
@@ -170,6 +187,11 @@
         <fieldset class="day_form_cat day_form_neg">
             <legend class="day_form_cat_h">{{__('Diät')}}</legend>
 
+            <x-day-form-details :cat_class="'day_form_neg'" :cat_name="'Diät'">
+                <p>{{__('Hier kannst du eintragen, ob du an diesem Tag gegen Diätvorsätze verstoßen hast.')}}</p>
+                <p>{{__('Falls du ein Nahrungsmittel aus den folgenden Kategorien zu dir genommen hast, setze den Haken.')}}</p>
+            </x-day-form-details>
+
             {{-- Alcohol --}}
             <div>
                 <x-image-toggle name="took_alcohol" svgName="noun-alcohol-6779240" isChecked="{{ (bool)old('took_alcohol', $day->took_alcohol ?? false) }}">
@@ -197,6 +219,11 @@
 
         <fieldset class="day_form_cat day_form_misc">
             <legend class="day_form_cat_h">{{__('Weiteres')}}</legend>
+
+            <x-day-form-details :cat_class="'day_form_misc'" :cat_name="'Weiteres'">
+                <p>{{__('Hier kannst du den Tag als Cheat-Day markieren und dein Gewicht eintragen.')}}</p>
+                <p>{{__('Wenn du den Tag als Cheat-Day markierst, werden dir keine Punkte für das Verfehlen von Zielen abgezogen.')}}
+            </x-day-form-details>
 
             {{-- Is this day a cheat day? --}}
             <div>

@@ -61,20 +61,20 @@
 
         <div class="day_form_cat day_form_nutrition">
             <p class="day_form_cat_h">{{__('Ernährung')}}</p>
-            {{-- Day Calorie Goal --}}
-            <div>
-                <p>{{ __('Tägl. Kalorienziel') }}</p>
-                <div class="w-6/12 flex gap-2 items-center">
-                    <p class="day_form_show_input">{{ $day->day_calorie_goal ?? 0 }}</p>
-                    <p class="mt-1 w-1/12">kcal</p>
-                </div>
-            </div>
-
             {{-- Day Calories --}}
             <div>
                 <p>{{ __('Kalorien') }}</p>
                 <div class="w-6/12 flex gap-2 items-center">
                     <p class="day_form_show_input">{{ $day->calories ?? 0 }}</p>
+                    <p class="mt-1 w-1/12">kcal</p>
+                </div>
+            </div>
+
+            {{-- Day Calorie Goal --}}
+            <div>
+                <p>{{ __('Tägl. Kalorienziel') }}</p>
+                <div class="w-6/12 flex gap-2 items-center">
+                    <p class="day_form_show_input">{{ $day->day_calorie_goal ?? 0 }}</p>
                     <p class="mt-1 w-1/12">kcal</p>
                 </div>
             </div>
