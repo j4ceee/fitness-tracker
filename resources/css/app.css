@@ -291,7 +291,7 @@
     overflow-y: scroll;
 }
 
-.day_form_info_btn {
+.day_form_info .day_form_info_btn {
     list-style: none;
     background-color: var(--bg_light);
     padding: .2rem;
@@ -302,6 +302,10 @@
     cursor: pointer;
     top: -1rem;
     right: -.8rem;
+}
+
+.day_form_info[open] .day_form_info_btn {
+    filter: drop-shadow(0 0 2px var(--white));
 }
 
 .day_form_cat {
@@ -488,6 +492,7 @@
 .day details summary {
     padding: 0;
     margin: 0;
+    transition: margin 150ms ease-out;
     cursor: pointer;
 }
 
@@ -495,7 +500,10 @@
     position: absolute;
     width: 100%;
     height: 40%;
+    margin-bottom: 10px;
+    transition: margin 150ms ease-out;
 }
+/* credit: https://stackoverflow.com/a/73447722 - Tárcio Zemel - CC BY-SA 4.0 */
 
 .cheat_day_icon {
     position: absolute;
